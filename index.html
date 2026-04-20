@@ -295,22 +295,55 @@ h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; color: var(--navy
 
 /* ===== RANKING UX ===== */
 .rank-scenario-banner {
-  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+  /* Per-scenario palette (defaults = q2a navy/gold) */
+  --banner-bg-1: var(--navy);
+  --banner-bg-2: var(--navy-2);
+  --banner-accent: var(--gold);
+  --banner-shadow: rgba(15,27,45,0.18);
+  background: linear-gradient(135deg, var(--banner-bg-1) 0%, var(--banner-bg-2) 100%);
   color: #fff;
   border-radius: 12px;
   padding: 16px 18px 18px;
   margin-bottom: 14px;
-  box-shadow: 0 3px 14px rgba(15,27,45,0.18);
+  box-shadow: 0 3px 14px var(--banner-shadow);
+}
+/* Per-scenario themes — each chosen for high contrast with white body text
+   and a bright accent that pops against the bg. */
+.rank-scenario-banner[data-theme="q2b"] {
+  --banner-bg-1: #1B4D3E; --banner-bg-2: #2A6A54;
+  --banner-accent: #FFD866; --banner-shadow: rgba(20,56,44,0.28);
+}
+.rank-scenario-banner[data-theme="q2c"] {
+  --banner-bg-1: #3A2555; --banner-bg-2: #5A3D80;
+  --banner-accent: #7BE5BE; --banner-shadow: rgba(45,26,70,0.28);
+}
+.rank-scenario-banner[data-theme="q2d"] {
+  --banner-bg-1: #8A3822; --banner-bg-2: #B14E32;
+  --banner-accent: #FFE0A3; --banner-shadow: rgba(108,42,22,0.28);
+}
+.rank-scenario-banner[data-theme="q2e"] {
+  --banner-bg-1: #2A3848; --banner-bg-2: #445A72;
+  --banner-accent: #5EEAD4; --banner-shadow: rgba(34,48,64,0.28);
 }
 .rsb-counter {
-  font-size: 0.72rem; color: var(--gold); text-transform: uppercase;
+  font-size: 0.72rem; color: var(--banner-accent); text-transform: uppercase;
   letter-spacing: 0.14em; font-weight: 800; margin-bottom: 6px;
 }
 .rsb-title {
   font-size: 1.3rem; font-weight: 800; line-height: 1.25;
   color: #fff; letter-spacing: -0.01em;
 }
-.rsb-title strong { color: var(--gold); font-weight: 800; }
+.rsb-title strong {
+  color: var(--banner-accent); font-weight: 800;
+  display: inline-block; transform-origin: center center;
+}
+.rsb-title strong.pulse {
+  animation: rsbKeywordPulse 0.55s ease-in-out 3;
+}
+@keyframes rsbKeywordPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.09); }
+}
 .rank-instructions {
   font-size: 0.88rem; color: var(--text-2); margin-bottom: 12px;
   line-height: 1.5;
@@ -1927,6 +1960,15 @@ function renderQ2() {
   document.getElementById('q2-scenario-label').textContent = `Scenario ${q2Index + 1} of ${Q2_SCENARIOS.length}`;
   document.getElementById('q2-label').innerHTML = sc.label;
   document.getElementById('q2-total').textContent = q2Items.length;
+
+  // Swap banner theme per scenario so each feels visibly distinct.
+  const banner = document.querySelector('#screen-4 .rank-scenario-banner');
+  if (banner) banner.dataset.theme = sc.id;
+
+  // Briefly pulse the scenario keyword to draw the eye to what's changed.
+  const strongEl = document.querySelector('#q2-label strong');
+  if (strongEl) strongEl.classList.add('pulse');
+
   refreshQ2List();
 }
 
