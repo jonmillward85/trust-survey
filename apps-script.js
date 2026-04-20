@@ -123,18 +123,20 @@ function getHeaders() {
     'q7a_dmcca_aware',
     'q7b_knowing_changes',
 
-    // Q8: Star rating psychology — 4 pairs x 2 scenarios
-    //   *_position  = which on-screen side the canonical "A" was shown on (left|right)
-    //   *_display   = which side the respondent tapped (left|right)
-    //   (bare key) = canonical choice (A|B), so analysis is invariant to display flip
-    'q8_low_p1', 'q8_low_p1_display', 'q8_low_p1_position',
-    'q8_low_p2', 'q8_low_p2_display', 'q8_low_p2_position',
-    'q8_low_p3', 'q8_low_p3_display', 'q8_low_p3_position',
-    'q8_low_p4', 'q8_low_p4_display', 'q8_low_p4_position',
-    'q8_high_p1', 'q8_high_p1_display', 'q8_high_p1_position',
-    'q8_high_p2', 'q8_high_p2_display', 'q8_high_p2_position',
-    'q8_high_p3', 'q8_high_p3_display', 'q8_high_p3_position',
-    'q8_high_p4', 'q8_high_p4_display', 'q8_high_p4_position',
+    // Q8: Star rating psychology — 4 pairs x 2 scenarios (low / high stakes).
+    // Human-readable capture:
+    //   *_chose        = the option the respondent picked, e.g. "4.8★ / 31 reviews"
+    //   *_alternative  = the option they didn't pick
+    //   *_side         = which side they tapped ("left" or "right")
+    // So you can eyeball a row and verify what was chosen without decoding anything.
+    'q8_low_p1_chose',  'q8_low_p1_alternative',  'q8_low_p1_side',
+    'q8_low_p2_chose',  'q8_low_p2_alternative',  'q8_low_p2_side',
+    'q8_low_p3_chose',  'q8_low_p3_alternative',  'q8_low_p3_side',
+    'q8_low_p4_chose',  'q8_low_p4_alternative',  'q8_low_p4_side',
+    'q8_high_p1_chose', 'q8_high_p1_alternative', 'q8_high_p1_side',
+    'q8_high_p2_chose', 'q8_high_p2_alternative', 'q8_high_p2_side',
+    'q8_high_p3_chose', 'q8_high_p3_alternative', 'q8_high_p3_side',
+    'q8_high_p4_chose', 'q8_high_p4_alternative', 'q8_high_p4_side',
 
     // Q9: Betrayal + gaming suspicion
     'q9a_betrayed',

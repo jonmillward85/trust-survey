@@ -2665,14 +2665,30 @@ function buildPayload() {
   const q4Answers = {};
   Q4_PLATFORMS.forEach(p => { q4Answers['q4_' + p.id] = (answers.q4 && answers.q4[p.id]) ? answers.q4[p.id] : ''; });
 
-  // Q8: pairs x scenarios
+  // Q8: pairs x scenarios — emit human-readable columns so the Sheet is
+  // validatable at a glance.
+  //   _chose        = exact text of the option the respondent picked
+  //   _alternative  = exact text of the option they didn't pick
+  //   _side         = which side they clicked ("left" or "right")
+  // Leaving the cryptic A/B canonical code out of the main payload keeps the
+  // sheet readable; the same info is reconstructable from _chose + the pair
+  // definition if you ever need it.
+  const formatQ8 = (data) => `${data.stars.toFixed(1)}★ / ${data.countLabel}`;
   const q8Answers = {};
   Q8_SCENARIOS.forEach(sc => {
     Q8_PAIRS.forEach(p => {
-      const key = 'q8_' + sc.id + '_' + p.id;
-      q8Answers[key] = answers[key] || '';
-      q8Answers[key + '_display'] = answers[key + '_display'] || '';
-      q8Answers[key + '_position'] = answers['__q8_pos_' + sc.id + '_' + p.id] || '';
+      const baseKey = 'q8_' + sc.id + '_' + p.id;
+      const canonical = answers[baseKey] || '';         // 'A' = pair.a, 'B' = pair.b
+      const displaySide = answers[baseKey + '_display']; // 'A' = left, 'B' = right
+      let chose = '', alternative = '';
+      if (canonical === 'A') { chose = formatQ8(p.a); alternative = formatQ8(p.b); }
+      else if (canonical === 'B') { chose = formatQ8(p.b); alternative = formatQ8(p.a); }
+      let side = '';
+      if (displaySide === 'A') side = 'left';
+      else if (displaySide === 'B') side = 'right';
+      q8Answers[baseKey + '_chose'] = chose;
+      q8Answers[baseKey + '_alternative'] = alternative;
+      q8Answers[baseKey + '_side'] = side;
     });
   });
 
