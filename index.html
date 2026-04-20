@@ -1650,8 +1650,8 @@ function buildQ4() {
   randomisedOrders.q4_platforms = platforms.map(p => p.id);
   container.innerHTML = platforms.map(pf => {
     const logoHtml = platformLogoHtml(pf);
-    // Randomise first 3 options, keep "Not sure" last
-    const opts = [...shuffle(Q4_OPTIONS.slice(0, 3)), Q4_OPTIONS[3]];
+    // Keep options in logical order (Yes → Some → No → Not sure) for every platform
+    const opts = [...Q4_OPTIONS];
     const optsHtml = opts.map(opt => `
       <li><button class="option-btn" data-q4="${pf.id}" data-val="${escAttr(opt)}" onclick="selectQ4('${pf.id}', this)">
         <span class="radio-dot"></span>${escHtml(opt)}
@@ -2091,7 +2091,18 @@ let q8Order = []; // Array of {scenario, pair, aIsA(boolean)} — 8 items
 let q8Index = 0;
 
 function initQ8() {
-  // Order of pairs within each scenario randomised; scenarios low-stakes then high-stakes
+  // If we've already built q8Order this session, don't reshuffle — resume where the
+  // respondent left off. This preserves the randomised pair order + left/right
+  // assignment across back-nav out of and back into the Q8 screen.
+  if (q8Order && q8Order.length) {
+    const firstUnanswered = q8Order.findIndex(it => !answers['q8_' + it.scenario.id + '_' + it.pair.id]);
+    q8Index = firstUnanswered === -1 ? 0 : firstUnanswered;
+    const qcard = document.getElementById('qcard-q8');
+    if (qcard) qcard.dataset.scenario = '';
+    renderQ8({ suppressOverlay: true });
+    return;
+  }
+  // First entry — randomise pair order within each scenario, randomise A/B side
   const lowPairs = shuffle([...Q8_PAIRS]).map(p => ({ scenario: Q8_SCENARIOS[0], pair: p, aIsA: Math.random() < 0.5 }));
   const highPairs = shuffle([...Q8_PAIRS]).map(p => ({ scenario: Q8_SCENARIOS[1], pair: p, aIsA: Math.random() < 0.5 }));
   q8Order = [...lowPairs, ...highPairs];
@@ -2122,10 +2133,17 @@ function renderStars(score) {
   return html;
 }
 
-function renderStarsCard(side, data, pair, scenarioId) {
+function renderStarsCard(side, data, pair, scenarioId, aIsA) {
+  // `side` is the DISPLAY position: 'A' = left card, 'B' = right card.
+  // answers['q8_...'] stores the CANONICAL option picked: 'A' = pair.a, 'B' = pair.b.
+  // Convert canonical → display position using aIsA so the correct card is highlighted
+  // regardless of which side the respondent saw pair.a/pair.b on.
   const label = side === 'A' ? 'Option A' : 'Option B';
   const currentAnswer = answers['q8_' + scenarioId + '_' + pair.id];
-  const selected = currentAnswer === side ? ' selected' : '';
+  let selectedDisplaySide = null;
+  if (currentAnswer === 'A') selectedDisplaySide = aIsA ? 'A' : 'B';
+  else if (currentAnswer === 'B') selectedDisplaySide = aIsA ? 'B' : 'A';
+  const selected = selectedDisplaySide === side ? ' selected' : '';
   return `
     <div class="stars-card${selected}" data-side="${side}" onclick="selectStars('${scenarioId}', '${pair.id}', '${side}', this)">
       <div class="stars-label">${label}</div>
@@ -2159,9 +2177,9 @@ function renderQ8(opts) {
 
   const pairEl = document.getElementById('q8-pair');
   pairEl.innerHTML =
-    renderStarsCard('A', leftData, pair, scenario.id) +
+    renderStarsCard('A', leftData, pair, scenario.id, aIsA) +
     `<div class="pair-or">OR</div>` +
-    renderStarsCard('B', rightData, pair, scenario.id);
+    renderStarsCard('B', rightData, pair, scenario.id, aIsA);
 
   // Cross-fade animation between pairs so it's obvious the options changed
   if (opts.animatePair) {
