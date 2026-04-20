@@ -1,0 +1,2852 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0F2A47">
+<title>UK Consumer Research: Trust, Reviews &amp; Ratings</title>
+<style>
+/* ===== RESET & VARIABLES ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F5F7FA;
+  --surface: #ffffff;
+  --text: #0F1B2D;
+  --text-2: #34425A;
+  --muted: #697289;
+  --navy: #0F2A47;
+  --navy-2: #1B3A5F;
+  --accent: #D4263C;
+  --accent-2: #B81E33;
+  --accent-light: #FFEBEE;
+  --gold: #F0A500;
+  --gold-light: #FFF7E6;
+  --teal: #1AA085;
+  --teal-light: #E4F7F3;
+  --border: #D6DBE4;
+  --border-2: #E8ECF2;
+  --error: #D4263C;
+  --radius: 10px;
+  --shadow: 0 2px 10px rgba(15,27,45,0.06);
+  --shadow-lg: 0 10px 32px rgba(15,27,45,0.14);
+  --ease: 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.wrap { max-width: 700px; margin: 0 auto; padding: 16px 16px 80px; }
+
+/* ===== PROGRESS ===== */
+.progress-track {
+  position: sticky; top: 0; z-index: 100;
+  width: 100%; height: 4px; background: #E0E5EC;
+  margin-bottom: 18px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  border-radius: 0 3px 3px 0;
+  transition: width 0.45s ease;
+}
+
+/* ===== SCREENS ===== */
+.screen { display: none; opacity: 0; transform: translateY(8px); transition: opacity 0.22s ease, transform 0.22s ease; }
+.screen.active { display: block; }
+.screen.visible { opacity: 1; transform: translateY(0); }
+
+/* ===== TYPOGRAPHY ===== */
+h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 8px; color: var(--navy); letter-spacing: -0.02em; line-height: 1.15; }
+h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; color: var(--navy); }
+.subtitle { font-size: 0.98rem; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; }
+
+.step-pill {
+  display: inline-block;
+  font-size: 0.7rem; color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.12em; font-weight: 800; margin-bottom: 14px;
+  background: var(--accent-light); padding: 5px 14px; border-radius: 20px;
+}
+
+/* ===== WELCOME ===== */
+.welcome-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: var(--shadow-lg);
+  max-width: 600px;
+  overflow: hidden;
+  margin: 20px auto 0;
+}
+.welcome-header {
+  height: 130px;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 50%, #0A1D33 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.welcome-header::before {
+  content: ""; position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 20% 40%, rgba(240,165,0,0.12) 0%, transparent 40%),
+                    radial-gradient(circle at 80% 60%, rgba(212,38,60,0.14) 0%, transparent 40%);
+}
+.welcome-title {
+  position: relative;
+  font-family: var(--font-serif);
+  font-size: 1.9rem; font-weight: 700; color: #fff;
+  letter-spacing: -0.01em; text-align: center;
+  padding: 0 20px; line-height: 1.12;
+}
+.welcome-title em { color: var(--gold); font-style: italic; }
+.welcome-card-body { padding: 28px 28px 32px; }
+.welcome-card h1 { font-size: 1.2rem; margin-bottom: 14px; color: var(--navy); font-weight: 700; }
+.welcome-lead {
+  font-size: 1rem; color: var(--text); line-height: 1.6; margin-bottom: 20px;
+}
+.welcome-facts {
+  display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap;
+}
+.welcome-fact {
+  flex: 1 1 140px; background: #F8FAFC; border: 1px solid var(--border-2);
+  border-radius: 10px; padding: 12px 14px;
+}
+.welcome-fact-num {
+  font-size: 1.35rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 4px;
+}
+.welcome-fact-label { font-size: 0.82rem; color: var(--muted); line-height: 1.35; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 14px 32px; font-size: 1rem; font-weight: 700; font-family: var(--font);
+  border: none; border-radius: var(--radius); cursor: pointer; transition: all 0.2s ease;
+  letter-spacing: -0.01em; text-decoration: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-2); box-shadow: 0 4px 14px rgba(212,38,60,0.3); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { background: #C4C7D4; cursor: not-allowed; box-shadow: none; transform: none; }
+
+.btn-secondary {
+  background: transparent; color: var(--muted); border: 2px solid var(--border);
+  padding: 11px 22px; font-size: 0.88rem;
+}
+.btn-secondary:hover { background: #EEF1F6; color: var(--text); border-color: var(--muted); }
+
+/* ===== CONTEXT MESSAGES ===== */
+.context-msg {
+  font-size: 1rem; color: var(--text); line-height: 1.65;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+.context-msg strong { color: var(--navy); }
+
+.section-intro {
+  font-size: 0.95rem; color: var(--text-2);
+  margin-bottom: 18px; line-height: 1.6;
+  font-weight: 500;
+}
+
+/* ===== QUESTION CARDS ===== */
+.q-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 22px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.q-card.answered { border-color: var(--teal); box-shadow: 0 2px 12px rgba(26,160,133,0.12); }
+.q-card.error-shake { animation: shake 0.35s ease; border-color: var(--error); }
+
+.q-label {
+  font-size: 1.05rem; font-weight: 700; color: var(--text);
+  margin-bottom: 4px; line-height: 1.45;
+}
+.q-label .kw { color: var(--accent); font-weight: 800; }
+.q-sublabel {
+  font-size: 0.92rem; color: var(--text-2); line-height: 1.55;
+  margin-bottom: 8px;
+}
+.q-hint {
+  font-size: 0.82rem; color: var(--muted); margin-bottom: 14px; line-height: 1.45;
+}
+.q-hint-multi {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 0.86rem; font-weight: 700; color: var(--teal);
+  background: var(--teal-light); border: 1.5px solid var(--teal);
+  padding: 6px 12px; border-radius: 8px; margin-bottom: 14px;
+  line-height: 1.35;
+}
+.q-hint-multi .hint-icon { font-size: 0.95rem; flex-shrink: 0; }
+.q-hint-multi .hint-counter { font-weight: 600; color: var(--muted); font-size: 0.8rem; margin-left: 2px; }
+
+/* ===== RADIO OPTIONS ===== */
+.option-list { list-style: none; padding: 0; }
+.option-list li { margin-bottom: 7px; }
+.option-btn {
+  display: flex; align-items: center; width: 100%;
+  padding: 13px 15px; font-size: 0.95rem; font-family: var(--font);
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  transition: all 0.15s ease; text-align: left; line-height: 1.4;
+  color: var(--text); font-weight: 500;
+}
+.option-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+.option-btn.selected {
+  border-color: var(--accent); background: var(--accent-light);
+  font-weight: 700; color: var(--accent);
+}
+.option-btn.selected.advancing { animation: selectPulse 0.5s ease; }
+.option-btn .radio-dot {
+  width: 20px; height: 20px; min-width: 20px;
+  border: 2px solid var(--border); border-radius: 50%;
+  margin-right: 12px; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+}
+.option-btn.selected .radio-dot { border-color: var(--accent); }
+.option-btn.selected .radio-dot::after {
+  content: ''; width: 10px; height: 10px;
+  background: var(--accent); border-radius: 50%;
+}
+
+/* ===== CHECKBOX OPTIONS ===== */
+.check-btn {
+  display: flex; align-items: flex-start; width: 100%;
+  padding: 13px 15px; font-size: 0.95rem; font-family: var(--font);
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  transition: all 0.15s ease; text-align: left; line-height: 1.4;
+  color: var(--text); font-weight: 500;
+}
+.check-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+.check-btn.selected {
+  border-color: var(--accent); background: var(--accent-light);
+  font-weight: 600; color: var(--accent);
+}
+.check-btn.disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+.check-box {
+  width: 20px; height: 20px; min-width: 20px;
+  border: 2px solid var(--border); border-radius: 5px;
+  margin-right: 12px; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+}
+.check-btn.selected .check-box { border-color: var(--accent); background: var(--accent); }
+.check-btn.selected .check-box::after { content: '✓'; color: #fff; font-size: 0.72rem; font-weight: 900; }
+
+/* ===== OTHER / TEXT INPUTS ===== */
+.other-input {
+  width: 100%; padding: 10px 14px; margin-top: 8px;
+  font-size: 0.92rem; font-family: var(--font);
+  border: 2px solid var(--border); border-radius: var(--radius);
+  outline: none; transition: border-color 0.2s; display: none;
+}
+.other-input.show { display: block; }
+.other-input:focus { border-color: var(--accent); }
+
+.prolific-input {
+  width: 100%; padding: 14px 16px;
+  font-size: 1rem; font-family: var(--font);
+  border: 2px solid var(--border); border-radius: var(--radius);
+  outline: none; transition: border-color 0.2s;
+}
+.prolific-input:focus { border-color: var(--accent); }
+.prolific-input::placeholder { color: #B0B3C2; }
+
+/* ===== Q1 LOGO DISPLAY ===== */
+.logo-stage {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 26px 20px 22px;
+  background: linear-gradient(180deg, #FAFBFD 0%, #F3F5F9 100%);
+  border-radius: 12px; border: 1px solid var(--border-2);
+  margin-bottom: 16px;
+}
+.logo-img-wrap {
+  width: 260px; height: 260px;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 3px 14px rgba(15,27,45,0.09);
+  padding: 10px; margin-bottom: 16px;
+}
+.logo-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+.logo-name {
+  font-size: 1.1rem; font-weight: 700; color: var(--navy);
+  text-align: center; line-height: 1.25;
+}
+.logo-counter {
+  font-size: 0.78rem; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.08em; font-weight: 700; margin-bottom: 12px;
+}
+
+/* ===== RANKING UX ===== */
+.rank-scenario-banner {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 16px 18px 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 3px 14px rgba(15,27,45,0.18);
+}
+.rsb-counter {
+  font-size: 0.72rem; color: var(--gold); text-transform: uppercase;
+  letter-spacing: 0.14em; font-weight: 800; margin-bottom: 6px;
+}
+.rsb-title {
+  font-size: 1.3rem; font-weight: 800; line-height: 1.25;
+  color: #fff; letter-spacing: -0.01em;
+}
+.rsb-title strong { color: var(--gold); font-weight: 800; }
+.rank-instructions {
+  font-size: 0.88rem; color: var(--text-2); margin-bottom: 12px;
+  line-height: 1.5;
+}
+.rank-instructions strong { color: var(--navy); }
+.rank-progress {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 0.82rem; font-weight: 700; color: var(--muted);
+  margin-bottom: 10px;
+}
+.rank-progress .rp-count { color: var(--navy); }
+.rank-list { list-style: none; padding: 0; }
+.rank-list li { margin-bottom: 8px; }
+.rank-item {
+  display: flex; align-items: center; width: 100%;
+  padding: 14px 15px; font-size: 0.95rem; font-family: var(--font);
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  transition: background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, transform 0.18s ease;
+  text-align: left; line-height: 1.4; color: var(--text); font-weight: 500;
+  position: relative; user-select: none;
+}
+.rank-item:hover { border-color: var(--navy); background: #F5F7FB; }
+.rank-item.ranked {
+  /* Position-based heatmap colour applied inline (--rank-hue).
+     Hue runs 150 (green/trusted) → 0 (red/least) across the ranks. */
+  --rank-hue: 75;
+  background: hsl(var(--rank-hue), 72%, 94%);
+  border-color: hsl(var(--rank-hue), 55%, 50%);
+  color: var(--navy);
+  font-weight: 700;
+  box-shadow: 0 3px 10px hsla(var(--rank-hue), 45%, 40%, 0.18);
+}
+.rank-item.just-ranked { animation: rankPop 0.35s cubic-bezier(0.3, 1.6, 0.6, 1); }
+.rank-badge {
+  width: 32px; height: 32px; min-width: 32px;
+  border: 2px solid var(--border); border-radius: 50%;
+  margin-right: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem;
+  color: var(--muted); background: #F3F5F9;
+  transition: all 0.2s ease;
+}
+.rank-item.ranked .rank-badge {
+  border-color: hsl(var(--rank-hue), 55%, 42%);
+  background: hsl(var(--rank-hue), 60%, 40%);
+  color: #fff;
+  box-shadow: 0 2px 6px hsla(var(--rank-hue), 45%, 40%, 0.4);
+}
+.rank-label { flex: 1; }
+.rank-item .rank-logo {
+  width: 36px; height: 36px; margin-right: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; border-radius: 6px; flex-shrink: 0;
+  border: 1px solid var(--border-2); padding: 3px;
+}
+.rank-item .rank-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.rank-reset {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.82rem; color: var(--muted); font-weight: 600;
+  background: none; border: none; cursor: pointer; padding: 4px 0;
+  text-decoration: underline; text-decoration-color: transparent;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+.rank-reset:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+/* ===== STAR RATING PAIRS (Q8) ===== */
+.stars-scenario {
+  padding: 16px 18px; margin-bottom: 16px;
+  border-radius: 12px; font-size: 1rem; line-height: 1.5;
+  color: #fff; font-weight: 600;
+  display: flex; align-items: flex-start; gap: 14px;
+  box-shadow: 0 3px 14px rgba(15,27,45,0.15);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+.stars-scenario strong { color: inherit; font-weight: 800; }
+.stars-scenario .stars-icon {
+  width: 40px; height: 40px; min-width: 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.18); border-radius: 8px;
+  flex-shrink: 0;
+}
+.stars-scenario .stars-icon svg { width: 26px; height: 26px; fill: #fff; }
+.stars-scenario .stars-text { flex: 1; }
+/* Scenario themes */
+.q-card[data-scenario="low"] .stars-scenario {
+  background: linear-gradient(135deg, #1B3A5F 0%, #2C5A8F 100%);
+}
+.q-card[data-scenario="low"] .stars-scenario strong { color: #7DD3FC; }
+.q-card[data-scenario="high"] .stars-scenario {
+  background: linear-gradient(135deg, #8B4513 0%, #C17817 100%);
+}
+.q-card[data-scenario="high"] .stars-scenario strong { color: #FFD580; }
+
+.pair-options { display: flex; flex-direction: column; gap: 12px; }
+.pair-options.pair-changing { animation: pairSwap 0.36s cubic-bezier(0.4, 0, 0.2, 1) both; }
+@keyframes pairSwap {
+  0%   { opacity: 1; transform: translateX(0); }
+  40%  { opacity: 0; transform: translateX(-24px); }
+  41%  { opacity: 0; transform: translateX(24px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.stars-card {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: 12px; padding: 18px 18px; cursor: pointer;
+  transition: all 0.15s ease;
+}
+.stars-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.stars-card.selected {
+  border-color: var(--accent); background: var(--accent-light);
+  box-shadow: 0 4px 14px rgba(212,38,60,0.15);
+}
+
+/* Scenario-change overlay — a hold-to-read interstitial that appears when moving
+   from low-stakes to high-stakes. Stays on-screen until the user taps "Got it"
+   or clicks the backdrop, so nobody can miss it. */
+.scenario-change-overlay {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 500;
+  background: rgba(15,27,45,0.82);
+  padding: 20px;
+  opacity: 0;
+  animation: scenOverlayIn 0.32s ease forwards;
+}
+.scenario-change-overlay.dismissing {
+  animation: scenOverlayOut 0.28s ease forwards;
+}
+@keyframes scenOverlayIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scenOverlayOut { from { opacity: 1; } to { opacity: 0; } }
+.scenario-change-card {
+  background: linear-gradient(135deg, #8B4513 0%, #C17817 100%);
+  color: #fff; padding: 32px 34px; border-radius: 18px;
+  text-align: center; max-width: 420px; width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  transform: scale(0.6); opacity: 0;
+  animation: scenCardIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.scenario-change-overlay.dismissing .scenario-change-card {
+  animation: scenCardOut 0.28s ease forwards;
+}
+@keyframes scenCardIn  { to { transform: scale(1);   opacity: 1; } }
+@keyframes scenCardOut { to { transform: scale(0.9); opacity: 0; } }
+.scenario-change-card .scc-eyebrow {
+  font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: #FFD580; font-weight: 800; margin-bottom: 14px;
+}
+.scenario-change-card .scc-icon {
+  width: 80px; height: 80px; margin: 0 auto 18px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.2); border-radius: 50%;
+}
+.scenario-change-card .scc-icon svg { width: 48px; height: 48px; fill: #fff; }
+.scenario-change-card .scc-title {
+  font-size: 1.5rem; font-weight: 800; line-height: 1.25;
+  margin-bottom: 10px; letter-spacing: -0.01em;
+}
+.scenario-change-card .scc-subtitle {
+  font-size: 1rem; color: #FFE6B8; line-height: 1.5; margin-bottom: 22px;
+}
+.scenario-change-card .scc-continue {
+  background: #fff; color: #8B4513;
+  font-family: var(--font); font-size: 0.95rem; font-weight: 800;
+  padding: 12px 28px; border: none; border-radius: 999px;
+  cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+  letter-spacing: 0.02em;
+}
+.scenario-change-card .scc-continue:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.28); }
+.scenario-change-card .scc-continue:active { transform: translateY(0); }
+.stars-label {
+  font-size: 0.72rem; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.12em; font-weight: 800; margin-bottom: 8px;
+}
+.stars-card.selected .stars-label { color: var(--accent); }
+.stars-rating-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.stars-score {
+  font-size: 1.9rem; font-weight: 800; color: var(--navy);
+  line-height: 1; letter-spacing: -0.02em;
+}
+.stars-visual { display: inline-flex; gap: 2px; }
+.stars-visual svg { width: 22px; height: 22px; display: block; }
+.stars-count {
+  font-size: 0.88rem; color: var(--muted); font-weight: 500;
+  margin-top: 4px;
+}
+.stars-count a { color: #1A73E8; text-decoration: none; }
+.pair-or {
+  text-align: center; color: var(--muted); font-weight: 700;
+  font-size: 0.85rem; letter-spacing: 0.1em; margin: 4px 0;
+}
+
+/* ===== PERCENTAGE PICKER (Q3) ===== */
+.pct-subq { margin-bottom: 22px; padding-bottom: 20px; border-bottom: 1px dashed var(--border-2); }
+.pct-subq:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+.pct-platform-label {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 1.1rem; font-weight: 800; color: var(--navy); margin-bottom: 12px;
+}
+.pct-platform-logo {
+  width: 72px; height: 72px; border-radius: 10px; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  padding: 8px; border: 1px solid var(--border-2);
+  box-shadow: 0 2px 8px rgba(15,27,45,0.06);
+  flex-shrink: 0;
+}
+.pct-platform-logo img { width: 100%; height: 100%; object-fit: contain; }
+.pct-platform-logo .pct-fallback {
+  font-size: 1.6rem; font-weight: 800; color: var(--navy);
+  letter-spacing: -0.02em;
+}
+.pct-bands {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+}
+.pct-band-btn {
+  padding: 11px 4px; font-size: 0.82rem; font-family: var(--font);
+  font-weight: 600; border: 2px solid var(--border);
+  background: var(--surface); color: var(--text);
+  border-radius: 8px; cursor: pointer;
+  transition: all 0.15s ease; text-align: center; line-height: 1.2;
+}
+.pct-band-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+.pct-band-btn.selected {
+  border-color: var(--accent); background: var(--accent); color: #fff;
+  font-weight: 700;
+}
+
+/* ===== PLATFORM VERIFICATION (Q4) ===== */
+.verif-subq { margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px dashed var(--border-2); }
+.verif-subq:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+
+/* ===== TEXTAREA ===== */
+.q-textarea {
+  width: 100%; min-height: 80px; padding: 12px 14px;
+  font-size: 0.92rem; font-family: var(--font);
+  border: 2px solid var(--border); border-radius: var(--radius);
+  resize: vertical; outline: none; transition: border-color 0.2s;
+}
+.q-textarea:focus { border-color: var(--accent); }
+.q-textarea::placeholder { color: #B0B3C2; }
+
+/* ===== NAVIGATION ===== */
+.nav-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 20px; gap: 10px;
+}
+.nav-row .validation-msg {
+  font-size: 0.82rem; color: var(--error); font-weight: 600;
+  display: none; text-align: center; flex: 1;
+}
+.nav-row .validation-msg.show { display: block; }
+.nav-row .btn-continue-fallback { display: none; }
+.nav-row .btn-continue-fallback.show { display: inline-flex; }
+
+/* ===== THANK YOU / DEBRIEF ===== */
+.thankyou-card {
+  max-width: 580px; margin: 20px auto 0;
+  background: var(--surface); border-radius: 16px;
+  padding: 40px 28px; box-shadow: var(--shadow-lg);
+}
+.thankyou-card.centered { text-align: center; }
+.thankyou-card h1 { margin-bottom: 14px; }
+.check-circle {
+  width: 64px; height: 64px; margin: 0 auto 18px;
+  background: var(--teal); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both;
+}
+.check-circle svg {
+  width: 32px; height: 32px; stroke: #fff; stroke-width: 3;
+  fill: none; stroke-linecap: round; stroke-linejoin: round;
+}
+.check-circle svg .check-path {
+  stroke-dasharray: 40; stroke-dashoffset: 40;
+  animation: drawCheck 0.4s ease 0.7s forwards;
+}
+
+.debrief-notice {
+  background: var(--gold-light);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  padding: 18px 20px; margin: 16px 0;
+}
+.debrief-notice h3 {
+  font-size: 1rem; font-weight: 800; color: var(--navy);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+}
+.debrief-notice p { font-size: 0.95rem; line-height: 1.55; color: var(--text); margin-bottom: 6px; }
+.debrief-notice strong { color: var(--accent-2); }
+.fake-logos {
+  display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; justify-content: center;
+}
+.fake-logo-item {
+  flex: 0 1 110px; text-align: center;
+}
+.fake-logo-item .fl-img {
+  width: 90px; height: 90px; margin: 0 auto 6px;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  opacity: 0.85;
+}
+.fake-logo-item .fl-img::after {
+  content: 'FAKE';
+  position: absolute; top: 6px; right: 6px;
+  background: var(--accent); color: #fff;
+  font-size: 0.6rem; font-weight: 800;
+  padding: 2px 5px; border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+.fake-logo-item img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.fake-logo-item .fl-label { font-size: 0.78rem; color: var(--muted); line-height: 1.3; }
+
+.completion-code-box {
+  background: #F8FAFC; border-radius: var(--radius);
+  padding: 16px; margin-top: 16px; text-align: center;
+}
+.completion-code {
+  font-family: 'Courier New', monospace; font-size: 1.5rem; font-weight: 800;
+  letter-spacing: 0.15em; color: var(--accent); user-select: all; cursor: pointer;
+  padding: 8px; background: var(--surface); border-radius: 6px; border: 2px dashed var(--accent);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes selectPulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+@keyframes rankPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+.screen.visible .q-card,
+.screen.visible .context-msg,
+.screen.visible .logo-stage,
+.screen.visible .stars-scenario {
+  animation: fadeInUp 0.35s ease both;
+}
+.screen.visible .logo-stage { animation-delay: 0.03s; }
+.screen.visible .q-card:nth-child(1), .screen.visible .q-card { animation-delay: 0.08s; }
+
+#confetti-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 999;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .wrap { padding: 12px 10px 60px; }
+  h1 { font-size: 1.3rem; }
+  .welcome-title { font-size: 1.55rem; }
+  .welcome-card-body { padding: 22px 20px 26px; }
+  .q-card { padding: 18px 15px; }
+  .option-btn, .check-btn { padding: 12px 13px; font-size: 0.92rem; }
+  .rank-item { padding: 12px 12px; font-size: 0.92rem; }
+  .nav-row { flex-wrap: wrap; }
+  .nav-row .btn-primary { flex: 1; }
+  .btn { padding: 13px 20px; font-size: 0.95rem; }
+  .pct-bands { grid-template-columns: repeat(2, 1fr); }
+  .context-msg { font-size: 0.95rem; padding: 14px 16px; }
+  .stars-score { font-size: 1.6rem; }
+  .stars-visual svg { width: 20px; height: 20px; }
+  .logo-img-wrap { width: 210px; height: 210px; padding: 8px; }
+}
+@media (max-width: 380px) {
+  .welcome-facts { flex-direction: column; }
+  .pct-bands { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+
+  <!-- ========== SCREEN 0: WELCOME ========== -->
+  <div class="screen active" id="screen-0">
+    <div class="welcome-card">
+      <div class="welcome-header">
+        <div class="welcome-title">UK Consumer Research:<br><em>Trust, Reviews &amp; Ratings</em></div>
+      </div>
+      <div class="welcome-card-body">
+        <p class="welcome-lead">
+          This short survey is part of a national study on how consumers in the UK use trust marks, star ratings and online reviews to make decisions. Your honest answers help us understand what Britain really relies on.
+        </p>
+        <button class="btn btn-primary" onclick="goToScreen(1)" style="width: 100%;">Start the survey &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 1: PROLIFIC ID ========== -->
+  <div class="screen" id="screen-1">
+    <div class="q-card" id="qcard-prolific">
+      <div class="q-label">Please enter your Prolific ID to begin</div>
+      <div class="q-hint">You can find this on your Prolific dashboard. This is required to validate your submission.</div>
+      <input type="text" class="prolific-input" id="prolific-input" placeholder="e.g. 5f3e2a1b8c7d6e4f" autocomplete="off">
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span class="validation-msg" id="val-1">Please enter your Prolific ID to continue.</span>
+      <button class="btn btn-primary" onclick="tryAdvance(1)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 2: Q1 CONTAINER ========== -->
+  <div class="screen" id="screen-2">
+    <div class="step-pill">Part 1 of 3: Recognising Trust Marks</div>
+    <div class="context-msg" id="q1-intro-msg">
+      You'll see 13 badges, one at a time. For each one, tell us how familiar you are with it.
+    </div>
+    <div class="q-card" id="qcard-q1">
+      <div class="logo-counter" id="q1-counter">Badge 1 of 13</div>
+      <div class="logo-stage">
+        <div class="logo-img-wrap"><img id="q1-logo-img" src="" alt=""></div>
+        <div class="logo-name" id="q1-logo-name"></div>
+      </div>
+      <div class="q-label">How familiar are you with this mark?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q1"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="q1Back()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-2" onclick="q1Next()">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 3: PART 2 INTRO ========== -->
+  <div class="screen" id="screen-3">
+    <div class="step-pill">Part 2 of 3: Who Do You Trust?</div>
+    <div class="context-msg">
+      <p style="margin-bottom: 8px;"><strong>Five quick scenarios.</strong> For each one, tap the options in the order you'd trust them, most trusted first.</p>
+      <p style="margin-bottom: 0; color: var(--text-2);">Tap a ranked item to undo. If you haven't heard of something, put it near the bottom.</p>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary" onclick="tryAdvance(3)">Let's go &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 4: Q2 RANKING CONTAINER ========== -->
+  <div class="screen" id="screen-4">
+    <div class="step-pill">Part 2 of 3: Who Do You Trust?</div>
+    <div class="rank-scenario-banner">
+      <div class="rsb-counter" id="q2-scenario-label"></div>
+      <div class="rsb-title" id="q2-label"></div>
+    </div>
+    <div class="q-card" id="qcard-q2">
+      <div class="rank-instructions">
+        <strong>Tap in order, most trusted first.</strong> Tap a ranked item to undo.
+      </div>
+      <div class="rank-progress">
+        <span><span class="rp-count" id="q2-count">0</span> of <span id="q2-total">0</span> ranked</span>
+        <button class="rank-reset" id="q2-reset" onclick="resetRanking()" style="display:none;">&#8635; Start over</button>
+      </div>
+      <ul class="rank-list" id="q2-list"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="q2Back()">&larr; Back</button>
+      <span class="validation-msg" id="val-4">Please rank every item to continue.</span>
+      <button class="btn btn-primary" onclick="q2Next()">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 5: Q3 FAKE REVIEW PREVALENCE ========== -->
+  <div class="screen" id="screen-5">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q3">
+      <div class="q-label">Roughly what percentage of reviews on each of these platforms do you think are <span class="kw">fake or manipulated</span> in some way?</div>
+      <div class="q-hint">Choose one bracket per platform</div>
+      <div id="q3-subqs"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span class="validation-msg" id="val-5">Please answer for every platform.</span>
+      <button class="btn btn-primary" onclick="tryAdvance(5)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 6: Q4 PLATFORM VERIFICATION ========== -->
+  <div class="screen" id="screen-6">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q4">
+      <div class="q-label">To post a review on each of these platforms, does the reviewer need to have <span class="kw">actually used</span> the business or product?</div>
+      <div class="q-hint">Choose one answer per platform</div>
+      <div id="q4-subqs"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span class="validation-msg" id="val-6">Please answer for every platform.</span>
+      <button class="btn btn-primary" onclick="tryAdvance(6)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 7: Q5a TRUST TRAJECTORY ========== -->
+  <div class="screen" id="screen-7">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q5a">
+      <div class="q-label">Do you trust online reviews and ratings more, less, or about the same as you did <span class="kw">3 years ago</span>?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q5a"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-7" onclick="tryAdvance(7)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 8: Q5b / Q5c (BRANCHED REASONS) ========== -->
+  <div class="screen" id="screen-8">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q5bc">
+      <div class="q-label" id="q5bc-label">What's the main reason?</div>
+      <div class="q-hint-multi"><span class="hint-icon">☑</span> Pick up to 2 <span class="hint-counter">(<span id="q5bc-count">0</span> of 2 selected)</span></div>
+      <ul class="option-list" id="opts-q5bc"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span class="validation-msg" id="val-8">Please select at least one option.</span>
+      <button class="btn btn-primary" onclick="tryAdvance(8)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 9: Q6 CONFIDENCE IN SPOTTING FAKES ========== -->
+  <div class="screen" id="screen-9">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q6">
+      <div class="q-label">In your everyday life, how confident are you that you could <span class="kw">spot a fake</span> trust mark or badge?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q6"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-9" onclick="tryAdvance(9)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 10: Q7a DMCCA AWARENESS ========== -->
+  <div class="screen" id="screen-10">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q7a">
+      <div class="q-label">Since April 2025, businesses in the UK can be fined up to <span class="kw">10% of their global turnover</span> for commissioning fake reviews. Were you aware of this?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q7a"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-10" onclick="tryAdvance(10)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 11: Q7b KNOWING CHANGES TRUST ========== -->
+  <div class="screen" id="screen-11">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q7b">
+      <div class="q-label">Now that you know, does this make you trust online reviews <span class="kw">more</span>?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q7b"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-11" onclick="tryAdvance(11)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 12: Q8 PAIR CONTAINER ========== -->
+  <div class="screen" id="screen-12">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q8" data-scenario="low">
+      <div class="stars-scenario" id="q8-scenario"></div>
+      <div class="q-label">Based only on the ratings and reviews shown, which would you choose?</div>
+      <div class="q-hint" id="q8-counter">Choice 1 of 8</div>
+      <div class="pair-options" id="q8-pair"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="q8Back()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-12" onclick="q8Next()">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 13: Q9a BETRAYAL ========== -->
+  <div class="screen" id="screen-13">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q9a">
+      <div class="q-label">Have you ever been <span class="kw">let down</span> by a product or service that had excellent online reviews?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q9a"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-13" onclick="tryAdvance(13)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 14: Q9b SUSPECT FAKES ========== -->
+  <div class="screen" id="screen-14">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q9b">
+      <div class="q-label">Did you later suspect the reviews may have been <span class="kw">fake or manipulated</span>?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q9b"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-14" onclick="tryAdvance(14)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 15: Q10a AI CHATBOT USAGE ========== -->
+  <div class="screen" id="screen-15">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q10a">
+      <div class="q-label">Have you ever used an AI chatbot (e.g. <strong>ChatGPT, Gemini, Copilot</strong>) to help you research a product, service, or purchase?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q10a"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-15" onclick="tryAdvance(15)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 16: Q10b WHY USE AI ========== -->
+  <div class="screen" id="screen-16">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q10b">
+      <div class="q-label">Why did you use it?</div>
+      <div class="q-hint-multi"><span class="hint-icon">☑</span> Select all that apply</div>
+      <ul class="option-list" id="opts-q10b"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span class="validation-msg" id="val-16">Please select at least one option.</span>
+      <button class="btn btn-primary" onclick="tryAdvance(16)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 17: Q11 AI HARDER TO TELL ========== -->
+  <div class="screen" id="screen-17">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q11">
+      <div class="q-label">Do you think <span class="kw">AI</span> is making it harder to tell whether online reviews and ratings can be trusted?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q11"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-17" onclick="tryAdvance(17)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 18: Q12a VERIFICATION BEHAVIOUR ========== -->
+  <div class="screen" id="screen-18">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q12a">
+      <div class="q-label">Have you ever <span class="kw">checked</span> whether a trust mark, badge, or certification you saw was genuine, for example, by clicking on it or looking it up on another site?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q12a"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-18" onclick="tryAdvance(18)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 19: Q12b + Q12c ========== -->
+  <div class="screen" id="screen-19">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q12b">
+      <div class="q-label">How often do you do this?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q12b"></ul>
+    </div>
+    <div class="q-card" id="qcard-q12c">
+      <div class="q-label">Which mark or badge did you check <span class="kw">most recently</span>?</div>
+      <div class="q-hint">Start typing to search, or scroll the list</div>
+      <div style="position: relative;">
+        <input type="text" class="prolific-input" id="q12c-search" placeholder="Search trust marks..." autocomplete="off" style="margin-bottom: 10px;">
+        <div id="q12c-list" style="max-height: 280px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); background: #fff;"></div>
+        <input type="text" class="other-input" id="other-q12c" placeholder="Which mark or badge was it?" maxlength="120" oninput="updateOtherQ12c()">
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span class="validation-msg" id="val-19">Please answer both questions to continue.</span>
+      <button class="btn btn-primary" onclick="tryAdvance(19)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 20: Q13a SPEND ========== -->
+  <div class="screen" id="screen-20">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q13a">
+      <div class="q-label">In the last 12 months, roughly how much have you spent on products or services that turned out to be <span class="kw">worse than their online reviews suggested</span>?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q13a"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-20" onclick="tryAdvance(20)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 21: Q13b + Q13c ========== -->
+  <div class="screen" id="screen-21">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q13b">
+      <div class="q-label">How did this make you feel?</div>
+      <div class="q-hint-multi"><span class="hint-icon">☑</span> Pick 1 to 2 <span class="hint-counter">(<span id="q13b-count">0</span> of 2 selected)</span></div>
+      <ul class="option-list" id="opts-q13b"></ul>
+    </div>
+    <div class="q-card" id="qcard-q13c">
+      <div class="q-label">Thinking about the <span class="kw">worst example</span>, did you get your money back?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q13c"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span class="validation-msg" id="val-21">Please answer both questions to continue.</span>
+      <button class="btn btn-primary" onclick="tryAdvance(21)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 22: Q14 BIG PICTURE ========== -->
+  <div class="screen" id="screen-22">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q14">
+      <div class="q-label">Do you agree that it's becoming <span class="kw">nearly impossible</span> to know what's genuine online?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-q14"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-22" onclick="tryAdvance(22)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 23: Q14b MAIN REASON ========== -->
+  <div class="screen" id="screen-23">
+    <div class="step-pill">Part 3 of 3: Your Views</div>
+    <div class="q-card" id="qcard-q14b">
+      <div class="q-label">What do you think is the <span class="kw">main reason</span>?</div>
+      <div class="q-hint">Pick one</div>
+      <ul class="option-list" id="opts-q14b"></ul>
+      <input type="text" class="other-input" id="other-q14b" placeholder="Please specify..." maxlength="120" oninput="updateOtherRadio('q14b')">
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-23" onclick="tryAdvance(23)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 24: D1 HOUSEHOLD INCOME ========== -->
+  <div class="screen" id="screen-24">
+    <div class="step-pill">Almost done: One last question</div>
+    <div class="q-card" id="qcard-d1">
+      <div class="q-label">What is your total annual <span class="kw">household income</span>, before tax?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-d1"></ul>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
+      <span></span>
+      <button class="btn btn-primary btn-continue-fallback" id="continue-24" onclick="tryAdvance(24)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 25: DEBRIEF ========== -->
+  <div class="screen" id="screen-25">
+    <div class="thankyou-card">
+      <div class="check-circle">
+        <svg viewBox="0 0 24 24"><path class="check-path" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h1 style="text-align: center;">Thank you for completing this survey</h1>
+      <p style="font-size: 1rem; color: var(--text); line-height: 1.6; margin-bottom: 8px;">
+        Before you go, we should let you know that <strong>three of the badges</strong> we showed you earlier were completely made up by us.
+      </p>
+      <div class="debrief-notice">
+        <h3>The three fake badges were:</h3>
+        <div class="fake-logos">
+          <div class="fake-logo-item">
+            <div class="fl-img"><img src="logos/TRUEREVIEW.png" alt="TrueReview"></div>
+            <div class="fl-label"><strong>TrueReview</strong></div>
+          </div>
+          <div class="fake-logo-item">
+            <div class="fl-img"><img src="logos/RESA.png" alt="RESA"></div>
+            <div class="fl-label"><strong>RESA</strong><br>Residential Electrical Safety Authority</div>
+          </div>
+          <div class="fake-logo-item">
+            <div class="fl-img"><img src="logos/UKPAS.png" alt="UKPAS"></div>
+            <div class="fl-label"><strong>UKPAS</strong><br>UK Plumbing Assessment Scheme</div>
+          </div>
+        </div>
+        <p style="margin-top: 12px; margin-bottom: 0;">None of these are real organisations or schemes.</p>
+      </div>
+      <p style="font-size: 0.95rem; color: var(--text-2); line-height: 1.6; margin-bottom: 14px;">
+        We included them to test how easy it is for convincing-looking badges to fool people, and many people are taken in. This is an important finding about how trust signals work in the UK today.
+      </p>
+      <p style="font-size: 0.95rem; color: var(--text-2); line-height: 1.6; margin-bottom: 20px;">
+        Your answers are completely anonymous and will be used to help improve public awareness of trust marks and verification standards.
+      </p>
+      <button class="btn btn-primary" onclick="finishSurvey()" style="width: 100%;">Finish &amp; submit &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN 26: THANK YOU ========== -->
+  <div class="screen" id="screen-26">
+    <canvas id="confetti-canvas"></canvas>
+    <div class="thankyou-card centered">
+      <div class="check-circle">
+        <svg viewBox="0 0 24 24"><path class="check-path" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h1>You're all done</h1>
+      <p style="font-size: 1rem; color: var(--text-2); line-height: 1.6; margin-bottom: 16px;">
+        Your answers have been saved. Thank you for contributing to this study of how Britain navigates trust in a world of fake reviews, made-up badges, and unverified ratings.
+      </p>
+      <div class="completion-code-box">
+        <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 6px;">Your completion code:</p>
+        <div class="completion-code" id="completion-code">TRUSTUK</div>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">Copy this code, then click below to return to Prolific.</p>
+      </div>
+      <a href="#" target="_blank" class="btn btn-primary" id="prolific-return-btn" style="margin-top: 16px; width: 100%;">Return to Prolific &rarr;</a>
+      <p style="font-size: 0.82rem; color: var(--muted); margin-top: 18px;">The findings will be published later this year.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   THE GREAT BRITISH TRUST TEST — SURVEY LOGIC
+   ========================================================= */
+
+/* ===== CONFIG ===== */
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxO9-ysAJU0SFFl6OrOkqoCCEqJ9jmSnnjxQUma51I91E0P_voWarx1uhmnXWGhq0Aiag/exec';
+const TOTAL_SCREENS = 27; // 0..26
+const AUTO_ADVANCE_DELAY = 420;
+const COMPLETION_CODE = 'TRUSTUK';
+const PROLIFIC_RETURN_URL = 'https://app.prolific.com/submissions/complete?cc=' + COMPLETION_CODE;
+
+/* ===== STATE ===== */
+const answers = {};
+const sessionId = Date.now() + '-' + Math.random().toString(36).substr(2, 8);
+let currentScreen = 0;
+let startTime = null;
+const history = [0];
+const randomisedOrders = {};
+let autoAdvanceTimer = null;
+
+/* ===== UTILITY ===== */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function escAttr(s) { return String(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+/* ===== Q1: LOGOS ===== */
+const Q1_LOGOS = [
+  { id: 'gas_safe',     name: 'Gas Safe Register',                   file: 'logos/GASSAFE.png',      fake: false },
+  { id: 'bsi',          name: 'BSI Kitemark',                        file: 'logos/BSI.png',          fake: false },
+  { id: 'truereview',   name: 'TrueReview',                          file: 'logos/TRUEREVIEW.png',   fake: true  },
+  { id: 'trustmark',    name: 'TrustMark',                           file: 'logos/TRUSTMARK.png',    fake: false },
+  { id: 'ce_ukca',      name: 'CE / UKCA Marking',                   file: 'logos/CE.png',           fake: false },
+  { id: 'fensa',        name: 'FENSA',                               file: 'logos/FENSA.png',        fake: false },
+  { id: 'resa',         name: 'RESA (Residential Electrical Safety Authority)', file: 'logos/RESA.png', fake: true },
+  { id: 'trustpilot',   name: 'Trustpilot',                          file: 'logos/TRUSTPILOT.png',   fake: false },
+  { id: 'google_reviews', name: 'Google Reviews',                    file: 'logos/GOOGLEREVIEWS.png', fake: false },
+  { id: 'which',        name: 'Which? Recommended',                  file: 'logos/WHICH.png',        fake: false },
+  { id: 'ukpas',        name: 'UKPAS (UK Plumbing Assessment Scheme)', file: 'logos/UKPAS.png',      fake: true  },
+  { id: 'fhrs',         name: 'Food Hygiene Rating Scheme',          file: 'logos/FHRS.png',         fake: false },
+  { id: 'red_tractor',  name: 'Red Tractor Assurance',               file: 'logos/REDTRACTOR.png',   fake: false }
+];
+
+const Q1_SCALE = [
+  'Never seen it',
+  "Seen it but don't know what it means",
+  "Know what it means but it doesn't influence my decisions",
+  'Found it useful when making a decision',
+  'Relied on it when making an important decision'
+];
+
+/* ===== Q2: RANKING SCENARIOS ===== */
+const Q2_SCENARIOS = [
+  {
+    id: 'q2a', scenario: 'Choosing a restaurant',
+    label: "Choosing a <strong>restaurant</strong> you haven't been to before",
+    options: [
+      'Google Reviews',
+      'Tripadvisor',
+      'Personal recommendation from someone you know',
+      'Instagram / TikTok',
+      'Asked an AI tool (e.g. ChatGPT)'
+    ]
+  },
+  {
+    id: 'q2b', scenario: 'Hiring a tradesperson',
+    label: "Hiring a <strong>tradesperson</strong> you've never used before",
+    options: [
+      'Checkatrade',
+      'Trust a Trader',
+      'Google Reviews',
+      'Personal recommendation from someone you know',
+      'Which? Trusted Traders',
+      'Trading Standards approved',
+      'Asked an AI tool (e.g. ChatGPT)'
+    ]
+  },
+  {
+    id: 'q2c', scenario: 'Buying from an unfamiliar website',
+    label: "Buying from a <strong>website</strong> you've never used before",
+    options: [
+      'Trustpilot',
+      'Google Reviews',
+      'Personal recommendation from someone you know',
+      'Reddit threads about the company',
+      'A clear returns / money-back guarantee',
+      'Which? Recommended',
+      'Asked an AI tool (e.g. ChatGPT)'
+    ]
+  },
+  {
+    id: 'q2d', scenario: 'Booking accommodation',
+    label: "Booking <strong>accommodation</strong> you haven't stayed at before",
+    options: [
+      'Google Reviews',
+      'Tripadvisor',
+      'Booking.com ratings/reviews',
+      'Personal recommendation from someone you know',
+      'Hotel star rating (e.g. 3-star, 4-star)',
+      'Asked an AI tool (e.g. ChatGPT)'
+    ]
+  },
+  {
+    id: 'q2e', scenario: 'Switching energy, broadband, or insurance',
+    label: "Switching <strong>energy, broadband, or insurance</strong>",
+    options: [
+      'Trustpilot',
+      'MoneySavingExpert',
+      'Which? Recommended',
+      'Comparison site ranking (e.g. Uswitch, GoCompare)',
+      'Personal recommendation from someone you know',
+      'Reddit threads',
+      'Asked an AI tool (e.g. ChatGPT)'
+    ]
+  }
+];
+
+/* ===== Q3 PLATFORMS ===== */
+const Q3_PLATFORMS = [
+  { id: 'google_reviews', name: 'Google Reviews', logo: 'logos/GOOGLEREVIEWS.png' },
+  { id: 'amazon',         name: 'Amazon',         logo: null /* placeholder */ },
+  { id: 'trustpilot',     name: 'Trustpilot',     logo: 'logos/TRUSTPILOT.png' }
+];
+const Q3_BANDS = [
+  'None (0%)',
+  '1–10%',
+  '11–25%',
+  '26–50%',
+  '51–75%',
+  '76–90%',
+  'More than 90%',
+  "Don't know"
+];
+
+/* ===== Q4 PLATFORMS ===== */
+const Q4_PLATFORMS = [
+  { id: 'trustpilot',     name: 'Trustpilot',     logo: 'logos/TRUSTPILOT.png' },
+  { id: 'google_reviews', name: 'Google Reviews', logo: 'logos/GOOGLEREVIEWS.png' },
+  { id: 'amazon',         name: 'Amazon',         logo: null },
+  { id: 'booking',        name: 'Booking.com',    logo: null },
+  { id: 'checkatrade',    name: 'Checkatrade',    logo: null }
+];
+const Q4_OPTIONS = [
+  'Yes, they check every review is from a real customer',
+  "Some reviews are verified, some aren't",
+  'No, anyone can post',
+  'Not sure'
+];
+
+/* ===== Q5 BRANCHED REASONS ===== */
+const Q5A_OPTIONS = ['More than 3 years ago', 'About the same', 'Less than 3 years ago'];
+const Q5B_OPTIONS = [
+  'Too many fake or manipulated reviews',
+  'AI making it harder to tell real reviews from fake',
+  'Businesses gaming the system (e.g. paying for reviews, removing bad ones)',
+  'Reviews all seem the same: hard to tell products/services apart',
+  'Had a bad experience despite good reviews',
+  "Don't have time to read reviews properly anymore",
+  'Other'
+];
+const Q5C_OPTIONS = [
+  'Platforms have got better at removing fake reviews',
+  'AI tools help me research more efficiently',
+  "I've learned how to spot fake or unreliable reviews",
+  'More reviews available now, so easier to get a balanced picture',
+  'Verified purchase badges help me trust what I\u2019m reading',
+  'Other'
+];
+
+/* ===== Q6 ===== */
+const Q6_OPTIONS = ['Very confident', 'Quite confident', 'Not very confident', 'Not at all confident'];
+
+/* ===== Q7 ===== */
+const Q7A_OPTIONS = ['Yes', 'No', 'Not sure'];
+const Q7B_OPTIONS = ['Yes', 'No', 'Not sure'];
+
+/* ===== Q8 STAR RATING PAIRS ===== */
+const Q8_PAIRS = [
+  { id: 'p1', a: { stars: 4.8, count: 31,       countLabel: '31 reviews' },      b: { stars: 4.2, count: 812,  countLabel: '812 reviews' } },
+  { id: 'p2', a: { stars: 4.0, count: 2100,     countLabel: '2,100+ reviews' },  b: { stars: 4.7, count: 47,   countLabel: '47 reviews' } },
+  { id: 'p3', a: { stars: 3.8, count: 5200,     countLabel: '5,200+ reviews' },  b: { stars: 4.5, count: 97,   countLabel: '97 reviews' } },
+  { id: 'p4', a: { stars: 4.5, count: 203,      countLabel: '203 reviews' },     b: { stars: 4.5, count: 18,   countLabel: '18 reviews' } }
+];
+
+const Q8_ICON_BAG = '<svg viewBox="0 0 24 24"><path d="M6 7V6a6 6 0 0 1 12 0v1h3a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3Zm2 0h8V6a4 4 0 1 0-8 0v1Zm-1 5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>';
+const Q8_ICON_PLATE = '<svg viewBox="0 0 24 24"><path d="M6 2a1 1 0 0 1 1 1v7a1 1 0 0 1-2 0V6.42L3.87 7.55A2 2 0 0 1 3 8.96V3a1 1 0 0 1 1-1h.06A1 1 0 0 1 5 3v3l1 .85V3a1 1 0 0 1 0 0Zm2 0a1 1 0 0 1 1 1v3l1-.85V3a1 1 0 1 1 2 0v5.96a2 2 0 0 1-.87 1.65L10 11.58V21a1 1 0 1 1-2 0v-9.42l-1.13-1.13A2 2 0 0 1 6 8.96V3a1 1 0 0 1 1-1h1Zm11 0a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3v7a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1h1Zm1 3a1 1 0 0 0-1-1v7a1 1 0 0 0 1-1V5Z"/></svg>';
+const Q8_SCENARIOS = [
+  { id: 'low',  name: 'low-stakes',  short: "A &pound;15 purchase online",   text: "You're buying a product online for about <strong>&pound;15</strong>.",  icon: Q8_ICON_BAG },
+  { id: 'high', name: 'high-stakes', short: "A restaurant for a special meal", text: "You're choosing a restaurant for a <strong>special meal</strong>.",   icon: Q8_ICON_PLATE }
+];
+
+/* ===== Q9 ===== */
+const Q9A_OPTIONS = ['Yes', 'No'];
+const Q9B_OPTIONS = ['Yes', 'No', "Didn't think about it"];
+
+/* ===== Q10 ===== */
+const Q10A_OPTIONS = ['Yes', 'No'];
+const Q10B_OPTIONS = [
+  'Quicker / more convenient than searching myself',
+  'Thought it would give me a more reliable answer',
+  'Wanted a summary instead of reading lots of reviews',
+  'It gave me personalised recommendations',
+  'Just wanted to try it out',
+  'Other'
+];
+
+/* ===== Q11 ===== */
+const Q11_OPTIONS = ['Yes', 'No', 'Not sure'];
+
+/* ===== Q12 ===== */
+const Q12A_OPTIONS = ['Yes', 'No', "I wouldn't know how to check"];
+const Q12B_OPTIONS = [
+  'Almost always when I see one',
+  'Fairly often',
+  'Occasionally',
+  "I've only done it once or twice"
+];
+
+/* ~40 recognised UK trust marks and certifications for Q12c */
+const Q12C_MARKS = [
+  'ABTA (Travel)',
+  'ABTT Theatre Safety',
+  'Advertising Standards Authority (ASA)',
+  'Airbnb Plus',
+  'Amazon Verified Purchase badge',
+  'Amazon\'s Choice',
+  'Approved Code (Chartered Trading Standards Institute)',
+  'ATOL Protected',
+  'BBC Good Food approved',
+  'Blue Badge (accessibility)',
+  'Booking.com Travel Sustainable',
+  'British Standards Institution (BSI)',
+  'BSI Kitemark',
+  'CE Marking',
+  'Certified B Corporation',
+  'Checkatrade',
+  'CHAS (health & safety)',
+  'Cruelty Free International (Leaping Bunny)',
+  'CRB / DBS checked',
+  'Cyber Essentials',
+  'Fairtrade',
+  'FCA Authorised / Regulated',
+  'Federation of Master Builders',
+  'FENSA',
+  'FSC (Forest Stewardship Council)',
+  'Food Hygiene Rating Scheme (scores on the doors)',
+  'Freedom Food (RSPCA Assured)',
+  'Gas Safe Register',
+  'Good Housekeeping Institute Approved',
+  'Google Reviews badge',
+  'Investors in People',
+  'ISO 9001',
+  'Made in Britain',
+  'MARSH (Master Auto Repair)',
+  'MHRA approved',
+  'NAPIT',
+  'NICEIC',
+  'Organic (Soil Association)',
+  'Planet Mark',
+  'Ofcom approved',
+  'Red Tractor Assurance',
+  'RICS Regulated',
+  'RSPCA Assured',
+  'Rainforest Alliance',
+  'Safe Contractor',
+  'Taste of the West / Great Taste Award',
+  'Tripadvisor Traveler\u2019s Choice',
+  'Trust a Trader',
+  'TrustMark (Government Endorsed)',
+  'Trustpilot',
+  'UKAS accredited',
+  'UKCA Marking',
+  'Vegan Society',
+  'Vegetarian Society',
+  'Waste Management / SEPA / EA permit',
+  'Which? Recommended',
+  'Which? Trusted Traders',
+  'WRAS (Water Regulations)',
+  "Can't remember",
+  'Other'
+];
+
+/* ===== Q13 ===== */
+const Q13A_OPTIONS = [
+  "Nothing: this hasn't happened to me",
+  'Under £50',
+  '£50–200',
+  '£200–500',
+  '£500–1,000',
+  '£1,000–5,000',
+  'Over £5,000',
+  "It's definitely happened but I couldn't put a number on it"
+];
+const Q13B_OPTIONS = [
+  'Angry',
+  'Frustrated',
+  'Embarrassed that I was taken in',
+  "It didn't really bother me",
+  'Other'
+];
+const Q13C_OPTIONS = [
+  'Yes, full refund',
+  'Partial refund only',
+  'No refund at all',
+  "Didn't try to get a refund",
+  "It was a service, so a refund wasn't really possible"
+];
+
+/* ===== Q14 ===== */
+const Q14_OPTIONS = [
+  'Strongly agree',
+  'Agree',
+  'Neither agree nor disagree',
+  'Disagree',
+  'Strongly disagree'
+];
+const Q14B_OPTIONS = [
+  'Technology: AI and bots are flooding the internet with fake content',
+  'People: too many individuals and businesses are willing to deceive',
+  "Platforms: tech companies aren't doing enough to police content",
+  "Volume: there's too much information to verify any of it",
+  'Other (please specify)'
+];
+
+/* ===== D1 ===== */
+const D1_OPTIONS = [
+  'Under £15,000',
+  '£15,000 – £29,999',
+  '£30,000 – £49,999',
+  '£50,000 – £74,999',
+  '£75,000 – £99,999',
+  '£100,000 or more',
+  'Prefer not to say'
+];
+
+/* ===== AUTO-ADVANCE MAPPING ===== */
+const AUTO_SCREENS = {
+  7: 'q5a', 9: 'q6', 10: 'q7a', 11: 'q7b',
+  13: 'q9a', 14: 'q9b', 15: 'q10a', 17: 'q11',
+  18: 'q12a', 20: 'q13a', 22: 'q14', 23: 'q14b', 24: 'd1'
+};
+
+/* ========================================================= */
+/* RENDERING — radio, multi, Q3 bands                         */
+/* ========================================================= */
+
+function buildRadioOptions(qId, containerId, options, opts) {
+  opts = opts || {};
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  let list = [...options];
+  if (opts.randomise) {
+    // Randomise full list unless `fixedFrom` is set (keeps last N fixed)
+    const fixedFrom = opts.fixedFrom != null ? opts.fixedFrom : list.length;
+    const toRandomise = list.slice(0, fixedFrom);
+    const fixedEnd = list.slice(fixedFrom);
+    list = [...shuffle(toRandomise), ...fixedEnd];
+  }
+  randomisedOrders[qId] = list;
+  const otherIdx = opts.hasOther != null ? opts.hasOther : -1;
+  const otherVal = otherIdx >= 0 ? options[otherIdx] : null;
+
+  container.innerHTML = list.map(opt => {
+    const isOther = (opt === otherVal);
+    const safe = escHtml(opt);
+    const attr = escAttr(opt);
+    if (isOther) {
+      return `<li>
+        <button class="option-btn" data-q="${qId}" data-val="${attr}" data-other="true" onclick="selectRadio('${qId}', this, true)">
+          <span class="radio-dot"></span>${safe}
+        </button>
+        <input type="text" class="other-input" id="other-${qId}" placeholder="Please specify..." maxlength="120" oninput="updateOtherRadio('${qId}')">
+      </li>`;
+    }
+    return `<li>
+      <button class="option-btn" data-q="${qId}" data-val="${attr}" onclick="selectRadio('${qId}', this)">
+        <span class="radio-dot"></span>${safe}
+      </button>
+    </li>`;
+  }).join('');
+}
+
+function buildMultiOptions(qId, containerId, options, opts) {
+  opts = opts || {};
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  let list = [...options];
+  if (opts.randomise) {
+    const fixedFrom = opts.fixedFrom != null ? opts.fixedFrom : list.length;
+    const toRandomise = list.slice(0, fixedFrom);
+    const fixedEnd = list.slice(fixedFrom);
+    list = [...shuffle(toRandomise), ...fixedEnd];
+  }
+  randomisedOrders[qId] = list;
+  const otherVal = opts.otherValue || null;
+  container.innerHTML = list.map(opt => {
+    const safe = escHtml(opt);
+    const attr = escAttr(opt);
+    const isOther = otherVal && (opt === otherVal);
+    if (isOther) {
+      return `<li>
+        <button class="check-btn" data-q="${qId}" data-val="${attr}" data-other="true" onclick="toggleMulti('${qId}', this, ${opts.max || 'null'}, true)">
+          <span class="check-box"></span><span>${safe}</span>
+        </button>
+        <input type="text" class="other-input" id="other-multi-${qId}" placeholder="Please specify..." maxlength="120" oninput="updateOtherMulti('${qId}')">
+      </li>`;
+    }
+    return `<li>
+      <button class="check-btn" data-q="${qId}" data-val="${attr}" onclick="toggleMulti('${qId}', this, ${opts.max || 'null'})">
+        <span class="check-box"></span><span>${safe}</span>
+      </button>
+    </li>`;
+  }).join('');
+}
+
+/* ===== Q3: percentage bands ===== */
+const PLATFORM_FALLBACK_STYLE = {
+  amazon:     { bg: '#131A22', fg: '#FF9900', text: 'amazon',    font: "Arial, sans-serif", size: '1.05rem', weight: 700, italic: false },
+  booking:    { bg: '#003580', fg: '#FFFFFF', text: 'Booking',   font: "Arial, sans-serif", size: '0.88rem', weight: 800, italic: false },
+  checkatrade:{ bg: '#FFFFFF', fg: '#E3002B', text: 'checkatrade', font: "Arial, sans-serif", size: '0.72rem', weight: 800, italic: true  }
+};
+function platformLogoHtml(pf) {
+  if (pf.logo) return `<div class="pct-platform-logo"><img src="${pf.logo}" alt="${pf.name}"></div>`;
+  const s = PLATFORM_FALLBACK_STYLE[pf.id];
+  if (s) {
+    const italic = s.italic ? 'italic' : 'normal';
+    return `<div class="pct-platform-logo" style="background:${s.bg}; padding:6px;">
+      <span class="pct-fallback" style="color:${s.fg}; font-family:${s.font}; font-size:${s.size}; font-weight:${s.weight}; font-style:${italic}; line-height:1;">${s.text}</span>
+    </div>`;
+  }
+  return `<div class="pct-platform-logo"><span class="pct-fallback">${escHtml(pf.name[0])}</span></div>`;
+}
+
+function buildQ3() {
+  const container = document.getElementById('q3-subqs');
+  const platforms = [...Q3_PLATFORMS]; // keep order (Google, Amazon, Trustpilot — as per doc)
+  container.innerHTML = platforms.map(pf => {
+    const logoHtml = platformLogoHtml(pf);
+    // Bands: first 7 are the brackets in order; "Don't know" stays last
+    const bandsHtml = Q3_BANDS.map(band => `
+      <button class="pct-band-btn" data-q3="${pf.id}" data-val="${escAttr(band)}" onclick="selectQ3('${pf.id}', this)">${escHtml(band)}</button>
+    `).join('');
+    return `
+      <div class="pct-subq">
+        <div class="pct-platform-label">${logoHtml}<span>${escHtml(pf.name)}</span></div>
+        <div class="pct-bands">${bandsHtml}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectQ3(pfId, btn) {
+  if (!answers.q3) answers.q3 = {};
+  answers.q3[pfId] = btn.dataset.val;
+  // Update UI
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.pct-band-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  // Mark answered
+  const allAnswered = Q3_PLATFORMS.every(p => answers.q3 && answers.q3[p.id]);
+  const card = document.getElementById('qcard-q3');
+  if (allAnswered) card.classList.add('answered'); else card.classList.remove('answered');
+}
+
+/* ===== Q4: platform verification ===== */
+function buildQ4() {
+  const container = document.getElementById('q4-subqs');
+  // Randomise platform order per respondent
+  const platforms = shuffle(Q4_PLATFORMS);
+  randomisedOrders.q4_platforms = platforms.map(p => p.id);
+  container.innerHTML = platforms.map(pf => {
+    const logoHtml = platformLogoHtml(pf);
+    // Randomise first 3 options, keep "Not sure" last
+    const opts = [...shuffle(Q4_OPTIONS.slice(0, 3)), Q4_OPTIONS[3]];
+    const optsHtml = opts.map(opt => `
+      <li><button class="option-btn" data-q4="${pf.id}" data-val="${escAttr(opt)}" onclick="selectQ4('${pf.id}', this)">
+        <span class="radio-dot"></span>${escHtml(opt)}
+      </button></li>
+    `).join('');
+    return `
+      <div class="verif-subq">
+        <div class="pct-platform-label">${logoHtml}<span>${escHtml(pf.name)}</span></div>
+        <ul class="option-list">${optsHtml}</ul>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectQ4(pfId, btn) {
+  if (!answers.q4) answers.q4 = {};
+  answers.q4[pfId] = btn.dataset.val;
+  const subq = btn.closest('.verif-subq');
+  subq.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const allAnswered = Q4_PLATFORMS.every(p => answers.q4 && answers.q4[p.id]);
+  const card = document.getElementById('qcard-q4');
+  if (allAnswered) card.classList.add('answered'); else card.classList.remove('answered');
+}
+
+/* ========================================================= */
+/* RADIO + MULTI HANDLERS                                     */
+/* ========================================================= */
+function selectRadio(qId, btn, isOther) {
+  if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+  const card = btn.closest('.q-card');
+  card.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected', 'advancing'));
+  btn.classList.add('selected');
+  if (isOther) {
+    const otherInput = document.getElementById(`other-${qId}`);
+    if (otherInput) { otherInput.classList.add('show'); otherInput.focus(); }
+    answers[qId] = '__other_pending__';
+    card.classList.remove('answered');
+    showFallbackContinue(qId);
+  } else {
+    const otherInput = document.getElementById(`other-${qId}`);
+    if (otherInput) { otherInput.classList.remove('show'); otherInput.value = ''; }
+    answers[qId] = btn.dataset.val;
+    card.classList.add('answered');
+    card.classList.remove('error-shake');
+    // Auto-advance for screens listed in AUTO_SCREENS
+    const screenForQ = Object.keys(AUTO_SCREENS).find(s => AUTO_SCREENS[s] === qId);
+    if (screenForQ) {
+      btn.classList.add('advancing');
+      autoAdvanceTimer = setTimeout(() => { tryAdvance(parseInt(screenForQ)); }, AUTO_ADVANCE_DELAY);
+    }
+  }
+  // Branched-answer cleanup
+  if (qId === 'q5a') handleQ5aChange();
+  if (qId === 'q7a') handleQ7aChange();
+  if (qId === 'q9a') handleQ9aChange();
+  if (qId === 'q10a') handleQ10aChange();
+  if (qId === 'q12a') handleQ12aChange();
+  if (qId === 'q13a') handleQ13aChange();
+  if (qId === 'q14') handleQ14Change();
+}
+
+function showFallbackContinue(qId) {
+  const screenForQ = Object.keys(AUTO_SCREENS).find(s => AUTO_SCREENS[s] === qId);
+  if (screenForQ) {
+    const btn = document.getElementById(`continue-${screenForQ}`);
+    if (btn) btn.classList.add('show');
+  }
+}
+
+function updateOtherRadio(qId) {
+  const input = document.getElementById(`other-${qId}`);
+  if (!input) return;
+  const val = input.value.trim();
+  if (val) {
+    answers[qId] = 'Other: ' + val;
+    const card = input.closest('.q-card');
+    if (card) card.classList.add('answered');
+    showFallbackContinue(qId);
+  } else {
+    answers[qId] = '__other_pending__';
+    const card = input.closest('.q-card');
+    if (card) card.classList.remove('answered');
+  }
+}
+
+function toggleMulti(qId, btn, maxStr, isOther) {
+  const max = (maxStr === 'null' || maxStr == null) ? null : parseInt(maxStr);
+  if (!answers[qId]) answers[qId] = [];
+  const val = btn.dataset.val;
+  const isSelected = btn.classList.contains('selected');
+  const otherInput = document.getElementById('other-multi-' + qId);
+  if (isSelected) {
+    btn.classList.remove('selected');
+    // Remove this value (covers both bare value and any "Other: ..." variant)
+    answers[qId] = answers[qId].filter(v => {
+      if (isOther) return !(v === val || (typeof v === 'string' && v.indexOf('Other: ') === 0));
+      return v !== val;
+    });
+    if (isOther && otherInput) {
+      otherInput.classList.remove('show');
+      otherInput.value = '';
+    }
+  } else {
+    if (max && answers[qId].length >= max) {
+      const card = btn.closest('.q-card');
+      card.classList.add('error-shake');
+      setTimeout(() => card.classList.remove('error-shake'), 350);
+      return;
+    }
+    btn.classList.add('selected');
+    if (isOther) {
+      // Store as bare "Other" until user types text; updateOtherMulti replaces with "Other: <text>"
+      answers[qId].push(val);
+      if (otherInput) {
+        otherInput.classList.add('show');
+        // Defer focus slightly so iOS/Android browsers don't steal the tap event
+        setTimeout(() => { try { otherInput.focus(); } catch (e) {} }, 50);
+      }
+    } else {
+      answers[qId].push(val);
+    }
+  }
+  // Update disabled states for max
+  if (max) {
+    const atMax = answers[qId].length >= max;
+    btn.closest('.q-card').querySelectorAll('.check-btn').forEach(b => {
+      if (!b.classList.contains('selected')) b.classList.toggle('disabled', atMax);
+      else b.classList.remove('disabled');
+    });
+  }
+  // Update counters
+  if (qId === 'q5bc') document.getElementById('q5bc-count').textContent = answers.q5bc ? answers.q5bc.length : 0;
+  if (qId === 'q13b') document.getElementById('q13b-count').textContent = answers.q13b ? answers.q13b.length : 0;
+  const card = btn.closest('.q-card');
+  card.classList.toggle('answered', isMultiAnswered(qId));
+  card.classList.remove('error-shake');
+}
+
+/* "Answered" iff at least one pick AND no bare "Other" awaiting text */
+function isMultiAnswered(qId) {
+  const arr = answers[qId];
+  if (!arr || !arr.length) return false;
+  return !arr.some(v => v === 'Other' || v === 'Other (please specify)');
+}
+
+function updateOtherMulti(qId) {
+  const input = document.getElementById('other-multi-' + qId);
+  if (!input || !answers[qId]) return;
+  const val = input.value.trim();
+  // Find the Other slot (either bare "Other" or an existing "Other: ..." entry)
+  const idx = answers[qId].findIndex(v => v === 'Other' || v === 'Other (please specify)' || (typeof v === 'string' && v.indexOf('Other: ') === 0));
+  if (idx === -1) return;
+  if (val) {
+    answers[qId][idx] = 'Other: ' + val;
+  } else {
+    // Fall back to bare "Other" so validation blocks advance until text is entered
+    answers[qId][idx] = 'Other';
+  }
+  const card = input.closest('.q-card');
+  if (card) card.classList.toggle('answered', isMultiAnswered(qId));
+}
+
+/* ========================================================= */
+/* Q1 CREDULITY TEST                                          */
+/* ========================================================= */
+let q1Order = [];
+let q1Index = 0;
+
+function initQ1() {
+  q1Order = shuffle(Q1_LOGOS);
+  q1Index = 0;
+  renderQ1();
+}
+
+function renderQ1() {
+  const logo = q1Order[q1Index];
+  document.getElementById('q1-counter').textContent = `Badge ${q1Index + 1} of ${q1Order.length}`;
+  document.getElementById('q1-logo-img').src = logo.file;
+  document.getElementById('q1-logo-img').alt = logo.name;
+  document.getElementById('q1-logo-name').textContent = logo.name;
+
+  // Q1 scale: do NOT randomise (semantic progression from "never seen" to "relied on")
+  const container = document.getElementById('opts-q1');
+  const qId = 'q1_' + logo.id;
+  const currentAnswer = answers[qId];
+  container.innerHTML = Q1_SCALE.map(opt => {
+    const selected = currentAnswer === opt ? ' selected' : '';
+    return `<li>
+      <button class="option-btn${selected}" data-q="${qId}" data-val="${escAttr(opt)}" onclick="selectQ1('${qId}', this)">
+        <span class="radio-dot"></span>${escHtml(opt)}
+      </button>
+    </li>`;
+  }).join('');
+
+  const card = document.getElementById('qcard-q1');
+  card.classList.toggle('answered', Boolean(currentAnswer));
+  card.classList.remove('error-shake');
+
+  // Reset fallback continue button visibility (show only if answered)
+  const cont = document.getElementById('continue-2');
+  cont.classList.toggle('show', Boolean(currentAnswer));
+
+  // Show intro msg only on first item
+  const introMsg = document.getElementById('q1-intro-msg');
+  if (introMsg) introMsg.style.display = (q1Index === 0) ? 'block' : 'none';
+
+  updateProgress(currentScreen);
+}
+
+function selectQ1(qId, btn) {
+  if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+  const card = btn.closest('.q-card');
+  card.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected', 'advancing'));
+  btn.classList.add('selected', 'advancing');
+  answers[qId] = btn.dataset.val;
+  card.classList.add('answered');
+  // Auto-advance to next logo (or next screen)
+  autoAdvanceTimer = setTimeout(() => { q1Next(); }, AUTO_ADVANCE_DELAY);
+}
+
+function q1Next() {
+  // Validate current
+  const logo = q1Order[q1Index];
+  const qId = 'q1_' + logo.id;
+  if (!answers[qId]) {
+    const card = document.getElementById('qcard-q1');
+    card.classList.add('error-shake');
+    setTimeout(() => card.classList.remove('error-shake'), 350);
+    return;
+  }
+  submitData();
+  if (q1Index < q1Order.length - 1) {
+    q1Index++;
+    renderQ1();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    // Done with all logos — advance to next screen (Part 2 intro = screen 3)
+    goToScreen(3);
+  }
+}
+
+function q1Back() {
+  if (q1Index > 0) {
+    q1Index--;
+    renderQ1();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    // Back to Prolific screen
+    goBack();
+  }
+}
+
+/* ========================================================= */
+/* Q2 RANKING                                                 */
+/* ========================================================= */
+let q2Index = 0;
+let q2Items = []; // Currently displayed items, in randomised display order
+let q2Ranks = {}; // label -> rank (1..N)
+
+function initQ2() {
+  q2Index = 0;
+  renderQ2();
+}
+
+function renderQ2() {
+  const sc = Q2_SCENARIOS[q2Index];
+  q2Items = shuffle(sc.options);
+  randomisedOrders['q2_order_' + sc.id] = [...q2Items];
+  // Load existing answer if returning
+  q2Ranks = answers[sc.id] ? { ...answers[sc.id] } : {};
+
+  document.getElementById('q2-scenario-label').textContent = `Scenario ${q2Index + 1} of ${Q2_SCENARIOS.length}`;
+  document.getElementById('q2-label').innerHTML = sc.label;
+  document.getElementById('q2-total').textContent = q2Items.length;
+  refreshQ2List();
+}
+
+function refreshQ2List() {
+  const listEl = document.getElementById('q2-list');
+  const N = q2Items.length;
+  listEl.innerHTML = q2Items.map(label => {
+    const rank = q2Ranks[label];
+    const ranked = rank !== undefined;
+    const badge = ranked ? rank : '';
+    // Heatmap hue: rank 1 → 150 (green/most trusted), rank N → 0 (red/least trusted)
+    const hue = (ranked && N > 1) ? Math.round(150 - ((rank - 1) / (N - 1)) * 150) : 75;
+    const styleAttr = ranked ? ` style="--rank-hue: ${hue};"` : '';
+    return `
+      <li>
+        <button class="rank-item${ranked ? ' ranked' : ''}"${styleAttr} data-label="${escAttr(label)}" onclick="toggleRank(this)">
+          <span class="rank-badge">${badge}</span>
+          <span class="rank-label">${escHtml(label)}</span>
+        </button>
+      </li>
+    `;
+  }).join('');
+  const count = Object.keys(q2Ranks).length;
+  document.getElementById('q2-count').textContent = count;
+  document.getElementById('q2-reset').style.display = count > 0 ? 'inline-flex' : 'none';
+  const card = document.getElementById('qcard-q2');
+  card.classList.toggle('answered', count === q2Items.length);
+  card.classList.remove('error-shake');
+  // Save partial progress
+  const sc = Q2_SCENARIOS[q2Index];
+  answers[sc.id] = { ...q2Ranks };
+}
+
+function toggleRank(btn) {
+  const label = btn.dataset.label;
+  if (q2Ranks[label] !== undefined) {
+    // Remove rank, decrement all higher ranks (gap-filling)
+    const removedRank = q2Ranks[label];
+    delete q2Ranks[label];
+    Object.keys(q2Ranks).forEach(k => {
+      if (q2Ranks[k] > removedRank) q2Ranks[k]--;
+    });
+  } else {
+    // Add: assigned next available rank
+    const nextRank = Object.keys(q2Ranks).length + 1;
+    q2Ranks[label] = nextRank;
+    btn.classList.add('just-ranked');
+  }
+  refreshQ2List();
+  const validationMsg = document.getElementById('val-4');
+  if (validationMsg) validationMsg.classList.remove('show');
+}
+
+function resetRanking() {
+  q2Ranks = {};
+  refreshQ2List();
+}
+
+function q2Next() {
+  const sc = Q2_SCENARIOS[q2Index];
+  if (Object.keys(q2Ranks).length !== q2Items.length) {
+    const validationMsg = document.getElementById('val-4');
+    if (validationMsg) validationMsg.classList.add('show');
+    const card = document.getElementById('qcard-q2');
+    card.classList.add('error-shake');
+    setTimeout(() => card.classList.remove('error-shake'), 350);
+    return;
+  }
+  // Save ordered list of labels
+  answers[sc.id] = { ...q2Ranks };
+  submitData();
+  if (q2Index < Q2_SCENARIOS.length - 1) {
+    q2Index++;
+    renderQ2();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    goToScreen(5);
+  }
+}
+
+function q2Back() {
+  if (q2Index > 0) {
+    q2Index--;
+    renderQ2();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    goBack(); // back to part 2 intro
+  }
+}
+
+/* ========================================================= */
+/* Q5 BRANCHING                                               */
+/* ========================================================= */
+function handleQ5aChange() {
+  // Clear old Q5bc answer when path changes
+  delete answers.q5bc;
+}
+
+function renderQ5bc() {
+  const q5a = answers.q5a;
+  const labelEl = document.getElementById('q5bc-label');
+  const containerId = 'opts-q5bc';
+  if (q5a === 'Less than 3 years ago') {
+    labelEl.textContent = "What's the main reason? Pick up to 2.";
+    // Randomise first 6 options, keep "Other" at end
+    buildMultiOptions('q5bc', containerId, Q5B_OPTIONS, { max: 2, randomise: true, fixedFrom: 6, otherValue: 'Other' });
+  } else if (q5a === 'More than 3 years ago') {
+    labelEl.textContent = "What's the main reason? Pick up to 2.";
+    // Randomise first 5 options, keep "Other" at end
+    buildMultiOptions('q5bc', containerId, Q5C_OPTIONS, { max: 2, randomise: true, fixedFrom: 5, otherValue: 'Other' });
+  }
+  // Reset card state
+  const card = document.getElementById('qcard-q5bc');
+  card.classList.remove('answered');
+  document.getElementById('q5bc-count').textContent = '0';
+  document.getElementById('val-8').classList.remove('show');
+}
+
+/* ===== Q7 branching ===== */
+function handleQ7aChange() {
+  // When Q7a changes, clear old Q7b answer
+  delete answers.q7b;
+}
+
+/* ===== Q9 branching ===== */
+function handleQ9aChange() {
+  if (answers.q9a === 'No') delete answers.q9b;
+}
+
+/* ===== Q10 branching ===== */
+function handleQ10aChange() {
+  if (answers.q10a === 'No') delete answers.q10b;
+}
+
+/* ===== Q12 branching ===== */
+function handleQ12aChange() {
+  if (answers.q12a !== 'Yes') {
+    delete answers.q12b;
+    delete answers.q12c;
+  }
+}
+
+/* ===== Q13 branching ===== */
+function handleQ13aChange() {
+  if (answers.q13a === "Nothing: this hasn't happened to me") {
+    delete answers.q13b;
+    delete answers.q13c;
+  }
+}
+
+/* ===== Q14 branching ===== */
+function handleQ14Change() {
+  if (answers.q14 !== 'Strongly agree' && answers.q14 !== 'Agree') {
+    delete answers.q14b;
+  }
+}
+
+/* ========================================================= */
+/* Q8 STAR RATING PAIRS                                       */
+/* ========================================================= */
+let q8Order = []; // Array of {scenario, pair, aIsA(boolean)} — 8 items
+let q8Index = 0;
+
+function initQ8() {
+  // Order of pairs within each scenario randomised; scenarios low-stakes then high-stakes
+  const lowPairs = shuffle([...Q8_PAIRS]).map(p => ({ scenario: Q8_SCENARIOS[0], pair: p, aIsA: Math.random() < 0.5 }));
+  const highPairs = shuffle([...Q8_PAIRS]).map(p => ({ scenario: Q8_SCENARIOS[1], pair: p, aIsA: Math.random() < 0.5 }));
+  q8Order = [...lowPairs, ...highPairs];
+  q8Index = 0;
+  // Clear any stale scenario marker so first pair doesn't trigger overlay
+  const qcard = document.getElementById('qcard-q8');
+  if (qcard) qcard.dataset.scenario = '';
+  renderQ8({ suppressOverlay: true });
+}
+
+function renderStars(score) {
+  // Google-style 5-star rating with partial fill
+  const pct = Math.max(0, Math.min(5, score)) / 5 * 100;
+  // We'll draw 5 stars, each star background grey, and use a clipped overlay for filled portion
+  const uid = 's-' + Math.random().toString(36).substr(2, 6);
+  let html = `<span class="stars-visual" aria-label="${score} out of 5 stars">`;
+  for (let i = 0; i < 5; i++) {
+    html += `<svg viewBox="0 0 24 24"><defs>
+      <linearGradient id="${uid}-${i}" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="${Math.max(0, Math.min(1, score - i)) * 100}%" stop-color="#FBBC04"/>
+        <stop offset="${Math.max(0, Math.min(1, score - i)) * 100}%" stop-color="#E0E5EC"/>
+      </linearGradient>
+    </defs>
+    <path fill="url(#${uid}-${i})" d="M12 2l2.9 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.5 21.7l1.8-7.3L1.6 9.5l7.5-.6z"/>
+    </svg>`;
+  }
+  html += `</span>`;
+  return html;
+}
+
+function renderStarsCard(side, data, pair, scenarioId) {
+  const label = side === 'A' ? 'Option A' : 'Option B';
+  const currentAnswer = answers['q8_' + scenarioId + '_' + pair.id];
+  const selected = currentAnswer === side ? ' selected' : '';
+  return `
+    <div class="stars-card${selected}" data-side="${side}" onclick="selectStars('${scenarioId}', '${pair.id}', '${side}', this)">
+      <div class="stars-label">${label}</div>
+      <div class="stars-rating-row">
+        <div class="stars-score">${data.stars.toFixed(1)}</div>
+        ${renderStars(data.stars)}
+      </div>
+      <div class="stars-count"><a>${data.countLabel}</a></div>
+    </div>
+  `;
+}
+
+function renderQ8(opts) {
+  opts = opts || {};
+  const item = q8Order[q8Index];
+  const { scenario, pair, aIsA } = item;
+  const qcard = document.getElementById('qcard-q8');
+  const prevScenario = qcard.dataset.scenario;
+  const scenarioChanged = prevScenario && prevScenario !== scenario.id && !opts.suppressOverlay;
+
+  // Scenario banner with icon
+  document.getElementById('q8-scenario').innerHTML =
+    `<div class="stars-icon">${scenario.icon}</div>` +
+    `<div class="stars-text"><strong>Imagine:</strong> ${scenario.text}</div>`;
+  document.getElementById('q8-counter').textContent = `Choice ${q8Index + 1} of ${q8Order.length}`;
+  qcard.dataset.scenario = scenario.id;
+
+  // aIsA true => original A on left, B on right
+  const leftData = aIsA ? pair.a : pair.b;
+  const rightData = aIsA ? pair.b : pair.a;
+
+  const pairEl = document.getElementById('q8-pair');
+  pairEl.innerHTML =
+    renderStarsCard('A', leftData, pair, scenario.id) +
+    `<div class="pair-or">OR</div>` +
+    renderStarsCard('B', rightData, pair, scenario.id);
+
+  // Cross-fade animation between pairs so it's obvious the options changed
+  if (opts.animatePair) {
+    pairEl.classList.remove('pair-changing');
+    void pairEl.offsetWidth;
+    pairEl.classList.add('pair-changing');
+    setTimeout(() => pairEl.classList.remove('pair-changing'), 400);
+  }
+
+  // Store position metadata for each pair (so we know which true side was shown as A)
+  answers['__q8_pos_' + scenario.id + '_' + pair.id] = aIsA ? 'orig_a_left' : 'orig_b_left';
+
+  const currentAnswer = answers['q8_' + scenario.id + '_' + pair.id];
+  qcard.classList.toggle('answered', Boolean(currentAnswer));
+  const cont = document.getElementById('continue-12');
+  cont.classList.toggle('show', Boolean(currentAnswer));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Big, unmissable overlay when moving from low-stakes to high-stakes
+  if (scenarioChanged) showScenarioChangeOverlay(scenario);
+}
+
+function showScenarioChangeOverlay(scenario) {
+  // Remove any existing overlay
+  const existing = document.getElementById('scenario-change-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'scenario-change-overlay';
+  overlay.id = 'scenario-change-overlay';
+  overlay.innerHTML = `
+    <div class="scenario-change-card" role="dialog" aria-modal="true" aria-labelledby="scc-title">
+      <div class="scc-eyebrow">New scenario</div>
+      <div class="scc-icon">${scenario.icon}</div>
+      <div class="scc-title" id="scc-title">${scenario.short}</div>
+      <div class="scc-subtitle">Imagine this new situation, then make your choice.</div>
+      <button type="button" class="scc-continue">Got it &rarr;</button>
+    </div>
+  `;
+
+  function dismiss() {
+    if (!overlay.parentNode) return;
+    overlay.classList.add('dismissing');
+    setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 300);
+    clearTimeout(autoTimer);
+  }
+
+  document.body.appendChild(overlay);
+  // Tap the button OR the backdrop to continue
+  overlay.querySelector('.scc-continue').addEventListener('click', dismiss);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) dismiss(); });
+  // Safety net: auto-dismiss after 8s so nobody gets stuck if JS clicks misfire
+  const autoTimer = setTimeout(dismiss, 8000);
+}
+
+function selectStars(scenarioId, pairId, displaySide, card) {
+  if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+  // Resolve which actual option (pair.a or pair.b) this corresponds to
+  const item = q8Order[q8Index];
+  const { aIsA } = item;
+  // displaySide 'A' = left position, displayed data is pair.a if aIsA, else pair.b
+  const actualOption = (displaySide === 'A') ? (aIsA ? 'A' : 'B') : (aIsA ? 'B' : 'A');
+  const key = 'q8_' + scenarioId + '_' + pairId;
+  answers[key] = actualOption; // 'A' or 'B' relative to canonical pair definition
+  answers[key + '_display'] = displaySide; // which side was visible
+
+  // UI
+  document.querySelectorAll('#q8-pair .stars-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  document.getElementById('qcard-q8').classList.add('answered');
+  autoAdvanceTimer = setTimeout(() => { q8Next(); }, AUTO_ADVANCE_DELAY);
+}
+
+function q8Next() {
+  const item = q8Order[q8Index];
+  const key = 'q8_' + item.scenario.id + '_' + item.pair.id;
+  if (!answers[key]) {
+    const card = document.getElementById('qcard-q8');
+    card.classList.add('error-shake');
+    setTimeout(() => card.classList.remove('error-shake'), 350);
+    return;
+  }
+  submitData();
+  if (q8Index < q8Order.length - 1) {
+    q8Index++;
+    renderQ8({ animatePair: true });
+  } else {
+    goToScreen(13);
+  }
+}
+
+function q8Back() {
+  if (q8Index > 0) {
+    q8Index--;
+    renderQ8({ animatePair: true, suppressOverlay: true });
+  } else {
+    goBack(); // back to previous screen (Q7b)
+  }
+}
+
+/* ========================================================= */
+/* Q12c — SEARCHABLE TRUST MARK LIST                          */
+/* ========================================================= */
+let q12cRender = null;
+function initQ12c() {
+  const list = document.getElementById('q12c-list');
+  const search = document.getElementById('q12c-search');
+  const pinned = ["Can't remember", 'Other'];
+  const main = Q12C_MARKS.filter(m => !pinned.includes(m)).sort((a, b) => a.localeCompare(b, 'en'));
+
+  function render(filter) {
+    const flt = (filter || '').toLowerCase().trim();
+    const matchesMain = main.filter(m => !flt || m.toLowerCase().includes(flt));
+    // Always include pinned items at top
+    const all = [...pinned, ...matchesMain];
+    const ans = answers.q12c || '';
+    const isOtherAns = ans === '__other_pending__' || (typeof ans === 'string' && ans.indexOf('Other: ') === 0);
+    list.innerHTML = all.map(mark => {
+      const isMatch = (mark === ans) || (mark === 'Other' && isOtherAns);
+      const selected = isMatch ? ' selected' : '';
+      const isPinned = pinned.includes(mark);
+      const style = isPinned ? 'style="background: #FBFCFD; font-style: italic; color: var(--muted);"' : '';
+      return `<button class="option-btn${selected}" ${style} data-val="${escAttr(mark)}" onclick="selectQ12c(this)" style="border: none; border-bottom: 1px solid var(--border-2); border-radius: 0; padding: 11px 14px;">
+        <span class="radio-dot"></span>${escHtml(mark)}
+      </button>`;
+    }).join('');
+  }
+
+  search.addEventListener('input', e => render(e.target.value));
+  q12cRender = render;
+  refreshQ12c();
+}
+
+/* Called on screen entry (forward or back) to re-select the right row and restore the Other text field. */
+function refreshQ12c() {
+  if (q12cRender) q12cRender(document.getElementById('q12c-search').value || '');
+  const otherInput = document.getElementById('other-q12c');
+  if (!otherInput) return;
+  const ans = answers.q12c || '';
+  if (ans === '__other_pending__') {
+    otherInput.classList.add('show');
+    otherInput.value = '';
+  } else if (typeof ans === 'string' && ans.indexOf('Other: ') === 0) {
+    otherInput.classList.add('show');
+    otherInput.value = ans.substring(7);
+  } else {
+    otherInput.classList.remove('show');
+    otherInput.value = '';
+  }
+}
+
+function selectQ12c(btn) {
+  document.querySelectorAll('#q12c-list .option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const val = btn.dataset.val;
+  const otherInput = document.getElementById('other-q12c');
+  if (val === 'Other') {
+    // Mark as pending until free text is entered
+    answers.q12c = '__other_pending__';
+    if (otherInput) {
+      otherInput.classList.add('show');
+      setTimeout(() => { try { otherInput.focus(); } catch (e) {} }, 50);
+    }
+    document.getElementById('qcard-q12c').classList.remove('answered');
+    return;
+  }
+  // Non-Other pick: hide and clear any Other text
+  if (otherInput) {
+    otherInput.classList.remove('show');
+    otherInput.value = '';
+  }
+  answers.q12c = val;
+  document.getElementById('qcard-q12c').classList.add('answered');
+  document.getElementById('val-19').classList.remove('show');
+}
+
+function updateOtherQ12c() {
+  const input = document.getElementById('other-q12c');
+  if (!input) return;
+  const val = input.value.trim();
+  const card = document.getElementById('qcard-q12c');
+  if (val) {
+    answers.q12c = 'Other: ' + val;
+    if (card) card.classList.add('answered');
+    document.getElementById('val-19').classList.remove('show');
+  } else {
+    answers.q12c = '__other_pending__';
+    if (card) card.classList.remove('answered');
+  }
+}
+
+/* ========================================================= */
+/* ROUTING                                                    */
+/* ========================================================= */
+function getNextScreen(fromScreen) {
+  switch (fromScreen) {
+    case 7: // after Q5a
+      if (answers.q5a === 'About the same') return 9; // skip Q5bc
+      return 8;
+    case 8: return 9;
+    case 10: // after Q7a
+      // DMCCA: if "No" or "Not sure", ask Q7b; if "Yes", skip to Q8
+      if (answers.q7a === 'Yes') return 12;
+      return 11;
+    case 11: return 12; // Q7b -> Q8
+    case 13: // Q9a
+      if (answers.q9a === 'No') return 15;
+      return 14;
+    case 14: return 15; // Q9b -> Q10a
+    case 15: // Q10a
+      if (answers.q10a === 'No') return 17;
+      return 16;
+    case 16: return 17; // Q10b -> Q11
+    case 18: // Q12a
+      if (answers.q12a === 'Yes') return 19;
+      return 20;
+    case 19: return 20;
+    case 20: // Q13a
+      if (answers.q13a === "Nothing: this hasn't happened to me") return 22;
+      return 21;
+    case 21: return 22;
+    case 22: // Q14
+      if (answers.q14 === 'Strongly agree' || answers.q14 === 'Agree') return 23;
+      return 24;
+    case 23: return 24; // Q14b -> D1
+    case 24: return 25; // D1 -> Debrief
+    default: return fromScreen + 1;
+  }
+}
+
+/* ========================================================= */
+/* VALIDATION                                                 */
+/* ========================================================= */
+function isValidRadio(val) { return val && val !== '__other_pending__'; }
+function isValidMulti(qId) {
+  const arr = answers[qId];
+  if (!arr || !arr.length) return false;
+  // Bare "Other" means user picked Other but hasn't typed the free-text yet
+  return !arr.some(v => v === 'Other' || v === 'Other (please specify)');
+}
+
+function validateScreen(idx) {
+  switch (idx) {
+    case 1: {
+      const pid = document.getElementById('prolific-input').value.trim();
+      if (!pid) return false;
+      answers.prolific_id = pid;
+      return true;
+    }
+    case 2: {
+      // Q1: validated per-logo via q1Next(); here it's always valid when screen exits via q1Next
+      // For back navigation, we do not enforce here (user may leave and come back)
+      return true;
+    }
+    case 3: return true; // intro
+    case 4: {
+      // Q2: validated per scenario via q2Next(). If called from global path, allow only if all 5 are done.
+      return Q2_SCENARIOS.every(s => answers[s.id] && Object.keys(answers[s.id]).length === s.options.length);
+    }
+    case 5: return Q3_PLATFORMS.every(p => answers.q3 && answers.q3[p.id]);
+    case 6: return Q4_PLATFORMS.every(p => answers.q4 && answers.q4[p.id]);
+    case 7: return isValidRadio(answers.q5a);
+    case 8: return isValidMulti('q5bc');
+    case 9: return isValidRadio(answers.q6);
+    case 10: return isValidRadio(answers.q7a);
+    case 11: return isValidRadio(answers.q7b);
+    case 12: return true; // handled in q8Next
+    case 13: return isValidRadio(answers.q9a);
+    case 14: return isValidRadio(answers.q9b);
+    case 15: return isValidRadio(answers.q10a);
+    case 16: return isValidMulti('q10b');
+    case 17: return isValidRadio(answers.q11);
+    case 18: return isValidRadio(answers.q12a);
+    case 19: return isValidRadio(answers.q12b) && isValidRadio(answers.q12c);
+    case 20: return isValidRadio(answers.q13a);
+    case 21: return isValidMulti('q13b') && isValidRadio(answers.q13c);
+    case 22: return isValidRadio(answers.q14);
+    case 23: return isValidRadio(answers.q14b);
+    case 24: return isValidRadio(answers.d1);
+    default: return true;
+  }
+}
+
+function tryAdvance(fromScreen) {
+  const valMsg = document.getElementById(`val-${fromScreen}`);
+  if (!validateScreen(fromScreen)) {
+    if (valMsg) valMsg.classList.add('show');
+    const screenEl = document.getElementById(`screen-${fromScreen}`);
+    screenEl.querySelectorAll('.q-card:not(.answered)').forEach(card => {
+      card.classList.add('error-shake');
+      setTimeout(() => card.classList.remove('error-shake'), 350);
+    });
+    return;
+  }
+  if (valMsg) valMsg.classList.remove('show');
+  submitData();
+  const next = getNextScreen(fromScreen);
+  // Prepare screens that depend on state
+  if (next === 4) initQ2(); // enter Part 2 ranking
+  if (next === 8) renderQ5bc();
+  if (next === 12) initQ8(); // enter Q8 container
+  // Q12c refresh is handled centrally in goToScreen so it covers both forward and back nav
+  goToScreen(next);
+}
+
+/* ========================================================= */
+/* NAVIGATION                                                 */
+/* ========================================================= */
+function goToScreen(idx, isBack) {
+  if (idx === 1 && !startTime) startTime = Date.now();
+  if (!isBack) {
+    if (history[history.length - 1] !== idx) history.push(idx);
+  }
+  // Once a respondent reaches the debrief or the thank-you screen, lock back-navigation.
+  // We seal the in-memory history AND push a browser history state so the browser
+  // back button can't take them to screen 24 to change answers.
+  if (idx >= 25) {
+    // Collapse in-memory history to prevent in-app back
+    history.length = 0;
+    history.push(idx);
+    try {
+      window.history.pushState({ sealed: true, idx }, '');
+      if (!window.__trustTestSealed) {
+        window.__trustTestSealed = true;
+        window.addEventListener('popstate', function () {
+          // User hit the browser back button after debrief — re-pin them here.
+          if (currentScreen >= 25) window.history.pushState({ sealed: true, idx: currentScreen }, '');
+        });
+      }
+    } catch (e) { /* ignore — browsers without history API still block via absent UI */ }
+  }
+  const cur = document.getElementById(`screen-${currentScreen}`);
+  if (cur) cur.classList.remove('visible');
+
+  setTimeout(() => {
+    if (cur) cur.classList.remove('active');
+    currentScreen = idx;
+    const nxt = document.getElementById(`screen-${idx}`);
+    nxt.classList.add('active');
+    void nxt.offsetWidth;
+    nxt.classList.add('visible');
+
+    // Reset fallback continue buttons
+    nxt.querySelectorAll('.btn-continue-fallback').forEach(b => b.classList.remove('show'));
+    // Restore if there's an Other input filled or returning with answer set
+    if (isBack) {
+      const otherInput = nxt.querySelector('.other-input.show');
+      if (otherInput) nxt.querySelectorAll('.btn-continue-fallback').forEach(b => b.classList.add('show'));
+    }
+    // If returning to an auto-advance screen with existing answer, show continue
+    if (AUTO_SCREENS[idx]) {
+      const ans = answers[AUTO_SCREENS[idx]];
+      if (ans && ans !== '__other_pending__') {
+        nxt.querySelectorAll('.btn-continue-fallback').forEach(b => b.classList.add('show'));
+        // Re-highlight selected option
+        const container = nxt.querySelector('.option-list');
+        if (container) {
+          container.querySelectorAll('.option-btn').forEach(b => {
+            b.classList.toggle('selected', b.dataset.val === ans || (ans && ans.startsWith('Other: ') && b.dataset.other === 'true'));
+          });
+          // Handle Other input state on back
+          if (ans && ans.startsWith('Other: ')) {
+            const otherInput = document.getElementById('other-' + AUTO_SCREENS[idx]);
+            if (otherInput) {
+              otherInput.classList.add('show');
+              otherInput.value = ans.substring(7);
+            }
+          }
+        }
+        const card = nxt.querySelector('.q-card');
+        if (card) card.classList.add('answered');
+      }
+    }
+
+    // Restore multi-select state (Q5bc screen 8, Q10b screen 16, Q13b screen 21) on back nav
+    if (isBack) restoreMultiState(idx);
+    // Q12c lives inside screen 19 — always refresh on entry so the selected row and Other text mirror state
+    if (idx === 19) refreshQ12c();
+
+    updateProgress(idx);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (idx === 26) setTimeout(launchConfetti, 400);
+  }, isBack ? 120 : 180);
+}
+
+function goBack() {
+  if (history.length > 1) {
+    history.pop();
+    const prev = history[history.length - 1];
+    goToScreen(prev, true);
+  }
+}
+
+/* Re-apply multi-select ticks and Other text when the user navigates back to Q5bc / Q10b / Q13b */
+function restoreMultiState(idx) {
+  const map = { 8: 'q5bc', 16: 'q10b', 21: 'q13b' };
+  const qId = map[idx];
+  if (!qId) return;
+  const arr = answers[qId];
+  if (!arr || !arr.length) return;
+  const container = document.getElementById('opts-' + qId);
+  if (!container) return;
+  // Tick any selected buttons
+  container.querySelectorAll('.check-btn').forEach(b => {
+    const val = b.dataset.val;
+    const isOther = b.dataset.other === 'true';
+    const matches = arr.some(v => v === val || (isOther && typeof v === 'string' && (v === 'Other' || v.indexOf('Other: ') === 0)));
+    b.classList.toggle('selected', matches);
+  });
+  // Restore Other text if present
+  const otherEntry = arr.find(v => typeof v === 'string' && v.indexOf('Other: ') === 0);
+  const otherInput = document.getElementById('other-multi-' + qId);
+  if (otherInput) {
+    if (otherEntry) {
+      otherInput.classList.add('show');
+      otherInput.value = otherEntry.substring(7);
+    } else if (arr.some(v => v === 'Other')) {
+      // Other was ticked but text was never supplied
+      otherInput.classList.add('show');
+      otherInput.value = '';
+    } else {
+      otherInput.classList.remove('show');
+      otherInput.value = '';
+    }
+  }
+  // Re-apply disabled state if there's a max
+  // (max is encoded in the onclick attribute — derive from how many picks)
+  // Counter
+  const counter = document.getElementById(qId + '-count');
+  if (counter) counter.textContent = arr.length;
+  const card = document.getElementById('qcard-' + qId);
+  if (card) card.classList.toggle('answered', isMultiAnswered(qId));
+}
+
+function updateProgress(idx) {
+  let pct = 0;
+  if (idx === 0) pct = 0;
+  else if (idx === 26) pct = 100;
+  else if (idx === 25) pct = 99; // debrief
+  else if (idx === 2) {
+    // In Q1: scale by logo progress
+    pct = Math.round(((q1Index + 0.5) / Q1_LOGOS.length) * 18) + 2; // Q1 occupies ~2-20%
+  } else if (idx === 4) {
+    // In Q2: scale by scenario progress
+    pct = Math.round(((q2Index + 0.5) / Q2_SCENARIOS.length) * 18) + 22; // Q2 occupies ~22-40%
+  } else if (idx === 12) {
+    // In Q8: 8 sub-screens
+    pct = Math.round(((q8Index + 0.5) / 8) * 14) + 56; // Q8 occupies ~56-70%
+  } else {
+    // Linear fill based on screen index (outside sub-flows)
+    // map idx 3 → 20, 5 → 42, 6 → 48, 7 → 52, 8 → 53, 9 → 54, 10 → 56, 11 → 57, 13 → 71, 14 → 73, 15 → 75, 16 → 76, 17 → 78, 18 → 80, 19 → 82, 20 → 85, 21 → 87, 22 → 90, 23 → 93, 24 → 96
+    const map = { 1: 1, 3: 20, 5: 42, 6: 48, 7: 52, 8: 53, 9: 54, 10: 56, 11: 57, 13: 71, 14: 73, 15: 75, 16: 76, 17: 78, 18: 80, 19: 82, 20: 85, 21: 87, 22: 90, 23: 93, 24: 96 };
+    pct = map[idx] != null ? map[idx] : 50;
+  }
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+/* ========================================================= */
+/* DATA SUBMISSION                                            */
+/* ========================================================= */
+function buildPayload() {
+  const clean = (val) => (val && val !== '__other_pending__') ? val : '';
+
+  // Q1: serialise as logo_id → scale value
+  const q1Answers = {};
+  Q1_LOGOS.forEach(l => { q1Answers['q1_' + l.id] = answers['q1_' + l.id] || ''; });
+
+  // Q2: serialise as scenario_id → ordered list "1. Label | 2. Label | ..."
+  const q2Answers = {};
+  Q2_SCENARIOS.forEach(s => {
+    const ranks = answers[s.id] || {};
+    // Convert {label:rank} to [{rank, label}, ...] sorted by rank
+    const sorted = Object.keys(ranks).map(lbl => ({ rank: ranks[lbl], label: lbl })).sort((a, b) => a.rank - b.rank);
+    q2Answers[s.id + '_ranking'] = sorted.map(x => `${x.rank}. ${x.label}`).join(' | ');
+    q2Answers[s.id + '_display_order'] = (randomisedOrders['q2_order_' + s.id] || []).join(' | ');
+  });
+
+  // Q3: platform percentages
+  const q3Answers = {};
+  Q3_PLATFORMS.forEach(p => { q3Answers['q3_' + p.id] = (answers.q3 && answers.q3[p.id]) ? answers.q3[p.id] : ''; });
+
+  // Q4: platform verification
+  const q4Answers = {};
+  Q4_PLATFORMS.forEach(p => { q4Answers['q4_' + p.id] = (answers.q4 && answers.q4[p.id]) ? answers.q4[p.id] : ''; });
+
+  // Q8: pairs x scenarios
+  const q8Answers = {};
+  Q8_SCENARIOS.forEach(sc => {
+    Q8_PAIRS.forEach(p => {
+      const key = 'q8_' + sc.id + '_' + p.id;
+      q8Answers[key] = answers[key] || '';
+      q8Answers[key + '_display'] = answers[key + '_display'] || '';
+      q8Answers[key + '_position'] = answers['__q8_pos_' + sc.id + '_' + p.id] || '';
+    });
+  });
+
+  return {
+    sessionId,
+    startTime,
+    endTime: currentScreen >= 25 ? Date.now() : null,
+    totalSeconds: startTime ? Math.round((Date.now() - startTime) / 1000) : null,
+    currentScreen,
+    prolific_id: answers.prolific_id || '',
+    ...q1Answers,
+    ...q2Answers,
+    ...q3Answers,
+    ...q4Answers,
+    q5a_trajectory: clean(answers.q5a),
+    q5bc_reasons: (answers.q5bc || []).join(' | '),
+    q6_fake_confidence: clean(answers.q6),
+    q7a_dmcca_aware: clean(answers.q7a),
+    q7b_knowing_changes: clean(answers.q7b),
+    ...q8Answers,
+    q9a_betrayed: clean(answers.q9a),
+    q9b_suspected_fake: clean(answers.q9b),
+    q10a_ai_used: clean(answers.q10a),
+    q10b_ai_reasons: (answers.q10b || []).join(' | '),
+    q11_ai_harder: clean(answers.q11),
+    q12a_verified: clean(answers.q12a),
+    q12b_frequency: clean(answers.q12b),
+    q12c_last_mark: clean(answers.q12c),
+    q13a_spend: clean(answers.q13a),
+    q13b_feeling: (answers.q13b || []).join(' | '),
+    q13c_refund: clean(answers.q13c),
+    q14_capstone: clean(answers.q14),
+    q14b_main_reason: clean(answers.q14b),
+    d1_household_income: clean(answers.d1)
+  };
+}
+
+function submitData() {
+  const payload = buildPayload();
+  // Always log locally for debugging
+  try { console.log('[TRUST TEST]', payload); } catch (e) {}
+  if (!SHEETS_URL) return;
+  try {
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify(payload)
+    }).catch(err => console.warn('Submit failed:', err));
+  } catch (e) { /* ignore */ }
+}
+
+function finishSurvey() {
+  submitData();
+  goToScreen(26);
+}
+
+/* ========================================================= */
+/* CONFETTI                                                   */
+/* ========================================================= */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colours = ['#D4263C', '#F0A500', '#1AA085', '#0F2A47', '#FFE66D', '#1B3A5F'];
+  const pieces = [];
+  for (let i = 0; i < 110; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height * -1.2,
+      w: Math.random() * 8 + 4, h: Math.random() * 4 + 2,
+      colour: colours[Math.floor(Math.random() * colours.length)],
+      vx: (Math.random() - 0.5) * 3, vy: Math.random() * 3 + 2,
+      rot: Math.random() * 360, rotV: (Math.random() - 0.5) * 8, opacity: 1
+    });
+  }
+  let frame = 0; const maxFrames = 180;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); frame++;
+    const fadeStart = maxFrames * 0.6;
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.04; p.rot += p.rotV; p.vx *= 0.99;
+      if (frame > fadeStart) p.opacity = Math.max(0, 1 - (frame - fadeStart) / (maxFrames - fadeStart));
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot * Math.PI / 180);
+      ctx.globalAlpha = p.opacity; ctx.fillStyle = p.colour;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+    });
+    if (frame < maxFrames) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+/* ========================================================= */
+/* KEYBOARD SHORTCUTS                                         */
+/* ========================================================= */
+document.addEventListener('keydown', function (e) {
+  if (currentScreen === 0 || currentScreen === 26) return;
+  if (currentScreen === 1 && e.key === 'Enter') { tryAdvance(1); return; }
+  // Number keys pick options on radio screens (auto-advance)
+  if (currentScreen === 2) {
+    const num = parseInt(e.key);
+    if (!isNaN(num) && num >= 1 && num <= 5) {
+      const btns = document.querySelectorAll('#opts-q1 .option-btn');
+      if (num <= btns.length) btns[num - 1].click();
+    }
+    return;
+  }
+  const screenQId = AUTO_SCREENS[currentScreen];
+  if (!screenQId) return;
+  const num = parseInt(e.key);
+  if (isNaN(num) || num < 1) return;
+  const container = document.getElementById(`opts-${screenQId}`);
+  if (!container) return;
+  const buttons = container.querySelectorAll('.option-btn');
+  if (num <= buttons.length) buttons[num - 1].click();
+});
+
+/* ========================================================= */
+/* URL PARAM — Prolific ID auto-fill                          */
+/* ========================================================= */
+function tryAutoFillProlific() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get('PROLIFIC_PID') || params.get('prolific_id') || params.get('pid');
+    if (pid) {
+      const input = document.getElementById('prolific-input');
+      if (input) input.value = pid;
+      answers.prolific_id = pid;
+    }
+  } catch (e) { /* ignore */ }
+}
+
+/* ========================================================= */
+/* INIT                                                       */
+/* ========================================================= */
+function init() {
+  // Part 3 radios/multis
+  buildRadioOptions('q5a', 'opts-q5a', Q5A_OPTIONS, { randomise: false });
+  buildRadioOptions('q6',  'opts-q6',  Q6_OPTIONS,  { randomise: false });
+  buildRadioOptions('q7a', 'opts-q7a', Q7A_OPTIONS, { randomise: false });
+  buildRadioOptions('q7b', 'opts-q7b', Q7B_OPTIONS, { randomise: false });
+  buildRadioOptions('q9a', 'opts-q9a', Q9A_OPTIONS, { randomise: false });
+  buildRadioOptions('q9b', 'opts-q9b', Q9B_OPTIONS, { randomise: true, fixedFrom: 2 }); // randomise Yes/No, keep "Didn't think about it" last
+  buildRadioOptions('q10a','opts-q10a',Q10A_OPTIONS,{ randomise: false });
+  buildMultiOptions('q10b','opts-q10b',Q10B_OPTIONS,{ randomise: true, fixedFrom: 5, otherValue: 'Other' }); // last = Other
+  buildRadioOptions('q11', 'opts-q11', Q11_OPTIONS, { randomise: false });
+  buildRadioOptions('q12a','opts-q12a',Q12A_OPTIONS,{ randomise: false });
+  buildRadioOptions('q12b','opts-q12b',Q12B_OPTIONS,{ randomise: false });
+  buildRadioOptions('q13a','opts-q13a',Q13A_OPTIONS,{ randomise: false });
+  buildMultiOptions('q13b','opts-q13b',Q13B_OPTIONS,{ max: 2, randomise: true, fixedFrom: 4, otherValue: 'Other' }); // keep "Other" last
+  buildRadioOptions('q13c','opts-q13c',Q13C_OPTIONS,{ randomise: false });
+  buildRadioOptions('q14', 'opts-q14', Q14_OPTIONS, { randomise: false });
+  buildRadioOptions('q14b','opts-q14b',Q14B_OPTIONS,{ randomise: true, fixedFrom: 4, hasOther: 4 });
+  buildRadioOptions('d1',  'opts-d1',  D1_OPTIONS,  { randomise: false });
+
+  buildQ3();
+  buildQ4();
+  initQ12c();
+
+  // Initialise Q1 state when first shown
+  // (Q1 is rendered on first visit to screen 2)
+  const origGoToScreen = goToScreen;
+
+  // Auto-fill prolific ID from URL if present
+  tryAutoFillProlific();
+
+  // Update prolific return link with code
+  const rtn = document.getElementById('prolific-return-btn');
+  if (rtn) rtn.href = PROLIFIC_RETURN_URL;
+  document.getElementById('completion-code').textContent = COMPLETION_CODE;
+
+  setTimeout(() => document.getElementById('screen-0').classList.add('visible'), 50);
+  console.log('Trust Test survey initialised | Session:', sessionId);
+}
+
+/* Hook screen changes to trigger sub-flow inits */
+const _goToScreenOriginal = goToScreen;
+function _patchGoToScreen() {
+  const orig = goToScreen;
+  window.goToScreen = function (idx, isBack) {
+    // Pre-hooks
+    if (idx === 2 && q1Order.length === 0) initQ1();
+    if (idx === 2 && !isBack && q1Order.length > 0) {
+      // Already initialised — keep state
+    }
+    orig(idx, isBack);
+  };
+}
+_patchGoToScreen();
+
+init();
+</script>
+</body>
+</html>
