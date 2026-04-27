@@ -99,6 +99,9 @@ function getHeaders() {
     'q2c_ranking', 'q2c_display_order',
     'q2d_ranking', 'q2d_display_order',
     'q2e_ranking', 'q2e_display_order',
+    // Pipe-delimited list of scenario ids in the order this respondent saw them,
+    // e.g. "q2c|q2a|q2e|q2b|q2d". Lets analysis check for position effects.
+    'q2_scenario_order',
 
     // Q3: Fake-review prevalence estimate (band)
     'q3_google_reviews',
@@ -137,6 +140,8 @@ function getHeaders() {
     'q8_high_p2_chose', 'q8_high_p2_alternative', 'q8_high_p2_side',
     'q8_high_p3_chose', 'q8_high_p3_alternative', 'q8_high_p3_side',
     'q8_high_p4_chose', 'q8_high_p4_alternative', 'q8_high_p4_side',
+    // Order the two scenario blocks were shown in: "low|high" or "high|low".
+    'q8_scenario_order',
 
     // Q9: Betrayal + gaming suspicion
     'q9a_betrayed',

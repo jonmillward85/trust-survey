@@ -1153,7 +1153,7 @@ h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; color: var(--navy
     <div class="nav-row">
       <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
       <span class="validation-msg" id="val-24">Please answer all three to continue.</span>
-      <button class="btn btn-primary btn-continue-fallback" id="continue-24" onclick="tryAdvance(24)">Continue &rarr;</button>
+      <button class="btn btn-primary" id="continue-24" onclick="tryAdvance(24)">Continue &rarr;</button>
     </div>
   </div>
 
@@ -1983,14 +1983,22 @@ function q1Back() {
 let q2Index = 0;
 let q2Items = []; // Currently displayed items, in randomised display order
 let q2Ranks = {}; // label -> rank (1..N)
+let q2ScenariosShuffled = []; // Q2_SCENARIOS in this respondent's order
 
 function initQ2() {
+  // Randomise scenario order on first entry to control for fatigue / carryover
+  // between scenarios. Preserve the order across re-entry so a user who navigates
+  // back into Part 2 sees the same sequence rather than a fresh shuffle.
+  if (!q2ScenariosShuffled.length) {
+    q2ScenariosShuffled = shuffle([...Q2_SCENARIOS]);
+    randomisedOrders.q2_scenario_order = q2ScenariosShuffled.map(s => s.id).join('|');
+  }
   q2Index = 0;
   renderQ2();
 }
 
 function renderQ2() {
-  const sc = Q2_SCENARIOS[q2Index];
+  const sc = q2ScenariosShuffled[q2Index];
   q2Items = shuffle(sc.options);
   randomisedOrders['q2_order_' + sc.id] = [...q2Items];
   // Load existing answer if returning
@@ -2037,7 +2045,7 @@ function refreshQ2List() {
   card.classList.toggle('answered', count === q2Items.length);
   card.classList.remove('error-shake');
   // Save partial progress
-  const sc = Q2_SCENARIOS[q2Index];
+  const sc = q2ScenariosShuffled[q2Index];
   answers[sc.id] = { ...q2Ranks };
 }
 
@@ -2067,7 +2075,7 @@ function resetRanking() {
 }
 
 function q2Next() {
-  const sc = Q2_SCENARIOS[q2Index];
+  const sc = q2ScenariosShuffled[q2Index];
   if (Object.keys(q2Ranks).length !== q2Items.length) {
     const validationMsg = document.getElementById('val-4');
     if (validationMsg) validationMsg.classList.add('show');
@@ -2183,10 +2191,16 @@ function initQ8() {
     renderQ8({ suppressOverlay: true });
     return;
   }
-  // First entry — randomise pair order within each scenario, randomise A/B side
-  const lowPairs = shuffle([...Q8_PAIRS]).map(p => ({ scenario: Q8_SCENARIOS[0], pair: p, aIsA: Math.random() < 0.5 }));
-  const highPairs = shuffle([...Q8_PAIRS]).map(p => ({ scenario: Q8_SCENARIOS[1], pair: p, aIsA: Math.random() < 0.5 }));
-  q8Order = [...lowPairs, ...highPairs];
+  // First entry — randomise scenario order (low-then-high vs high-then-low), then
+  // randomise pair order within each scenario, then randomise A/B side per pair.
+  // Scenario randomisation controls for fatigue / carryover between the £15
+  // purchase and restaurant blocks (otherwise high-stakes is always second).
+  const scenariosShuffled = shuffle([...Q8_SCENARIOS]);
+  randomisedOrders.q8_scenario_order = scenariosShuffled.map(s => s.id).join('|');
+  const blocks = scenariosShuffled.map(scenario =>
+    shuffle([...Q8_PAIRS]).map(p => ({ scenario, pair: p, aIsA: Math.random() < 0.5 }))
+  );
+  q8Order = [...blocks[0], ...blocks[1]];
   q8Index = 0;
   // Clear any stale scenario marker so first pair doesn't trigger overlay
   const qcard = document.getElementById('qcard-q8');
@@ -2737,6 +2751,10 @@ function buildPayload() {
     q2Answers[s.id + '_ranking'] = sorted.map(x => `${x.rank}. ${x.label}`).join(' | ');
     q2Answers[s.id + '_display_order'] = (randomisedOrders['q2_order_' + s.id] || []).join(' | ');
   });
+  // Order in which the 5 scenarios were shown to this respondent (pipe-delimited
+  // scenario ids, e.g. "q2c|q2a|q2e|q2b|q2d") so position effects can be checked
+  // in analysis rather than confounded with scenario content.
+  q2Answers.q2_scenario_order = randomisedOrders.q2_scenario_order || '';
 
   // Q3: platform percentages
   const q3Answers = {};
@@ -2772,6 +2790,10 @@ function buildPayload() {
       q8Answers[baseKey + '_side'] = side;
     });
   });
+  // Order in which the two scenarios were shown to this respondent
+  // ("low|high" or "high|low") so the stakes-vs-order question can be settled
+  // in analysis. Pair order within each block is already randomised per pair.
+  q8Answers.q8_scenario_order = randomisedOrders.q8_scenario_order || '';
 
   return {
     sessionId,
