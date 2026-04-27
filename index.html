@@ -1219,7 +1219,7 @@ h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; color: var(--navy
       </p>
       <div class="completion-code-box">
         <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 6px;">Your completion code:</p>
-        <div class="completion-code" id="completion-code">CBTCZEEA</div>
+        <div class="completion-code" id="completion-code"></div>
         <p style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">Copy this code, then click below to return to Prolific.</p>
       </div>
       <a href="#" target="_blank" class="btn btn-primary" id="prolific-return-btn" style="margin-top: 16px; width: 100%;">Return to Prolific &rarr;</a>
@@ -2851,9 +2851,15 @@ function submitData() {
   try { console.log('[TRUST TEST]', payload); } catch (e) {}
   if (!SHEETS_URL) return;
   try {
+    // keepalive: true ensures the request completes even if the page is being
+    // unloaded, the user navigates away, or the network drops momentarily on
+    // mobile. Without it, an in-flight save may be aborted and the row would
+    // be missing the latest state. Payload size is well under the 64KB
+    // keepalive ceiling.
     fetch(SHEETS_URL, {
       method: 'POST',
       mode: 'no-cors',
+      keepalive: true,
       body: JSON.stringify(payload)
     }).catch(err => console.warn('Submit failed:', err));
   } catch (e) { /* ignore */ }
@@ -2861,6 +2867,14 @@ function submitData() {
 
 function finishSurvey() {
   submitData();
+  // Reveal the completion code and Prolific return URL only now, at the moment
+  // the respondent has actually finished. Until this runs the code is absent
+  // from the rendered DOM and from the page source, so a respondent who tries
+  // to short-cut the survey via View Source cannot fish the code out.
+  const rtn = document.getElementById('prolific-return-btn');
+  if (rtn) rtn.href = PROLIFIC_RETURN_URL;
+  const codeEl = document.getElementById('completion-code');
+  if (codeEl) codeEl.textContent = COMPLETION_CODE;
   goToScreen(26);
 }
 
@@ -2977,10 +2991,10 @@ function init() {
   // Auto-fill prolific ID from URL if present
   tryAutoFillProlific();
 
-  // Update prolific return link with code
-  const rtn = document.getElementById('prolific-return-btn');
-  if (rtn) rtn.href = PROLIFIC_RETURN_URL;
-  document.getElementById('completion-code').textContent = COMPLETION_CODE;
+  // NOTE: Prolific return link href and completion code text are intentionally
+  // NOT set during init. They are populated only when finishSurvey() runs, so
+  // the completion code is not present in the page DOM (or View Source) for
+  // respondents who try to short-cut the survey by inspecting the page.
 
   setTimeout(() => document.getElementById('screen-0').classList.add('visible'), 50);
   console.log('Trust Test survey initialised | Session:', sessionId);
