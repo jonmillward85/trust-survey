@@ -165,6 +165,8 @@ function getHeaders() {
 
     // Demographics
     'd1_household_income',
+    'd2_online_shopping_freq',
+    'd3_digital_confidence',
 
     // Server-side timestamp
     'timestamp'

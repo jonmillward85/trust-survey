@@ -1128,17 +1128,31 @@ h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; color: var(--navy
     </div>
   </div>
 
-  <!-- ========== SCREEN 24: D1 HOUSEHOLD INCOME ========== -->
+  <!-- ========== SCREEN 24: DEMOGRAPHICS (D2, D3, D1) ========== -->
   <div class="screen" id="screen-24">
-    <div class="step-pill">Almost done: One last question</div>
+    <div class="step-pill">Almost done: A few quick questions</div>
+
+    <div class="q-card" id="qcard-d2">
+      <div class="q-label">Roughly how often do you <span class="kw">buy something online</span> &mdash; anything from groceries and household items to clothes, electronics, or one-off purchases?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-d2"></ul>
+    </div>
+
+    <div class="q-card" id="qcard-d3">
+      <div class="q-label">How <span class="kw">confident</span> do you feel doing things online?</div>
+      <div class="q-hint">Select one</div>
+      <ul class="option-list" id="opts-d3"></ul>
+    </div>
+
     <div class="q-card" id="qcard-d1">
       <div class="q-label">What is your total annual <span class="kw">household income</span>, before tax?</div>
       <div class="q-hint">Select one</div>
       <ul class="option-list" id="opts-d1"></ul>
     </div>
+
     <div class="nav-row">
       <button class="btn btn-secondary" onclick="goBack()">&larr; Back</button>
-      <span></span>
+      <span class="validation-msg" id="val-24">Please answer all three to continue.</span>
       <button class="btn btn-primary btn-continue-fallback" id="continue-24" onclick="tryAdvance(24)">Continue &rarr;</button>
     </div>
   </div>
@@ -1535,7 +1549,7 @@ const Q14B_OPTIONS = [
   'Other (please specify)'
 ];
 
-/* ===== D1 ===== */
+/* ===== D1: household income ===== */
 const D1_OPTIONS = [
   'Under £15,000',
   '£15,000 – £29,999',
@@ -1546,11 +1560,36 @@ const D1_OPTIONS = [
   'Prefer not to say'
 ];
 
-/* ===== AUTO-ADVANCE MAPPING ===== */
+/* ===== D2: online shopping frequency =====
+   Bands engineered so every shopping rhythm has a clean, non-overlapping
+   home (e.g. fortnightly shoppers fit "1–3 times a month"). */
+const D2_OPTIONS = [
+  'Most days',
+  'A few times a week',
+  'About once a week',
+  '1–3 times a month',
+  'Less than once a month',
+  'Never or almost never'
+];
+
+/* ===== D3: digital confidence =====
+   5-point with an asymmetric "Sometimes confident" middle to spread the
+   typical Quite-confident pile-up and give a usable low-confidence tail. */
+const D3_OPTIONS = [
+  'Very confident',
+  'Mostly confident',
+  'Sometimes confident',
+  'Not very confident',
+  'Not at all confident'
+];
+
+/* ===== AUTO-ADVANCE MAPPING =====
+   Screen 24 hosts three demographic questions, so we let the user click
+   Continue rather than auto-advancing on the first answer. */
 const AUTO_SCREENS = {
   7: 'q5a', 9: 'q6', 10: 'q7a', 11: 'q7b',
   13: 'q9a', 14: 'q9b', 15: 'q10a', 17: 'q11',
-  18: 'q12a', 20: 'q13a', 22: 'q14', 23: 'q14b', 24: 'd1'
+  18: 'q12a', 20: 'q13a', 22: 'q14', 23: 'q14b'
 };
 
 /* ========================================================= */
@@ -2500,7 +2539,7 @@ function validateScreen(idx) {
     case 21: return isValidMulti('q13b') && isValidRadio(answers.q13c);
     case 22: return isValidRadio(answers.q14);
     case 23: return isValidRadio(answers.q14b);
-    case 24: return isValidRadio(answers.d1);
+    case 24: return isValidRadio(answers.d1) && isValidRadio(answers.d2) && isValidRadio(answers.d3);
     default: return true;
   }
 }
@@ -2764,7 +2803,9 @@ function buildPayload() {
     q13c_refund: clean(answers.q13c),
     q14_capstone: clean(answers.q14),
     q14b_main_reason: clean(answers.q14b),
-    d1_household_income: clean(answers.d1)
+    d1_household_income: clean(answers.d1),
+    d2_online_shopping_freq: clean(answers.d2),
+    d3_digital_confidence: clean(answers.d3)
   };
 }
 
@@ -2886,6 +2927,8 @@ function init() {
   buildRadioOptions('q14', 'opts-q14', Q14_OPTIONS, { randomise: false });
   buildRadioOptions('q14b','opts-q14b',Q14B_OPTIONS,{ randomise: true, fixedFrom: 4, hasOther: 4 });
   buildRadioOptions('d1',  'opts-d1',  D1_OPTIONS,  { randomise: false });
+  buildRadioOptions('d2',  'opts-d2',  D2_OPTIONS,  { randomise: false });
+  buildRadioOptions('d3',  'opts-d3',  D3_OPTIONS,  { randomise: false });
 
   buildQ3();
   buildQ4();
