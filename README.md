@@ -1,12 +1,15 @@
-# The Great British Trust Test — Survey Instrument
+# trust-survey.co.uk
 
-Self-contained HTML survey for Amtivo's consumer trust signals campaign. Hosted on GitHub Pages; submits responses to a Google Sheet via a Google Apps Script Web App.
+Hosts the public landing page for the **Britain's £5 Billion Trust Problem** research, plus an archived copy of the survey instrument used to gather the data.
 
-## Files
+## Layout
 
-- `index.html` — the survey (single file, 27 screens, all logic inline).
-- `logos/` — 13 Q1 trust-mark logos (10 real, 3 fake).
-- `apps-script.js` — reference copy of the Google Apps Script that backs the endpoint. Paste this into the linked Sheet via Extensions → Apps Script if you ever need to redeploy.
+- `index.html` — public landing page (the report, "Britain's £5 Billion Trust Problem"). Built locally from the per-section split files in the working repo (`Amtivo/Landing page build/`); see `Amtivo/Landing page build/build_landing_page.py`.
+- `trust-test-survey/logos/` — trust-mark logos referenced by both the landing page and the archived survey instrument.
+- `survey/index.html` — archived self-contained survey (27 screens, all logic inline). Recruitment is closed; this is kept here for transparency. Reachable at trust-survey.co.uk/survey/.
+- `survey/apps-script.js` — reference copy of the Google Apps Script that backs the original endpoint.
+- `survey/test-completion-code-deferred.js` — reference of the Q14 completion-code logic.
+- `CNAME` — binds the GitHub Pages site to trust-survey.co.uk.
 
 ## Endpoint
 
@@ -16,18 +19,4 @@ The survey posts to:
 https://script.google.com/macros/s/AKfycbxO9-ysAJU0SFFl6OrOkqoCCEqJ9jmSnnjxQUma51I91E0P_voWarx1uhmnXWGhq0Aiag/exec
 ```
 
-This is baked into `index.html` at the `SHEETS_URL` constant near the top of the script block.
-
-## Prolific integration
-
-The survey auto-fills the Prolific participant ID from the URL when Prolific appends `?PROLIFIC_PID=...` (or `?prolific_id=...` / `?pid=...`). Direct visitors are prompted to enter one manually on screen 1.
-
-## Deploy to GitHub Pages
-
-1. After push, in the repo: **Settings → Pages → Build and deployment → Source: Deploy from a branch → Branch: main / (root) → Save**.
-2. Pages will publish at `https://<owner>.github.io/trust-survey/`.
-3. If you attach a custom domain, add a `CNAME` file to the repo root containing the domain only.
-
-## Response storage
-
-Rows are upserted into the `Responses` tab of the linked Google Sheet, keyed on `sessionId`. Partial drop-offs overwrite with each screen advance, so the last row reflects the farthest point the respondent reached.
+This is baked into `survey/index.html` at the `SHEETS_URL` constant near the top of the script block.
